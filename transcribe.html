@@ -5,40 +5,61 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI TRANSCRIBER</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #0a0a0c; color: white; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 400px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; padding: 25px; box-sizing: border-box; }
-        .input-field { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 10px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; background: linear-gradient(135deg, #0088ff, #00d4ff); color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; }
-        .back-btn { align-self: flex-start; color: #666; text-decoration: none; margin-bottom: 20px; font-size: 14px; }
+        :root { --blue: #00d4ff; --dark: #0a0a0c; --glass: rgba(255, 255, 255, 0.05); }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); background-image: radial-gradient(circle at 50% -20%, #002244 0%, var(--dark) 80%); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 25px; box-sizing: border-box; }
+        .header h1 { font-size: 28px; font-weight: 900; text-align: center; text-transform: uppercase; color: var(--blue); margin: 0; }
+        .back-btn { align-self: flex-start; color: #666; text-decoration: none; font-size: 14px; margin-bottom: 15px; }
+        .input-field { width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #0088ff, #00d4ff); }
     </style>
 </head>
 <body>
-    <a href="index.html" class="back-btn">← Home</a>
+    <a href="index.html" class="back-btn">← DASHBOARD</a>
     <div class="container">
-        <h1 style="text-align:center; color:#00d4ff;">AI TRANSCRIBER</h1>
-        <input type="text" id="audioUrl" class="input-field" placeholder="Audio/Video Link">
+        <div class="header"><h1>AI TRANSCRIBER</h1></div>
+        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:20px;">AI Voice-to-Text Engine</p>
+        
+        <input type="text" id="audioUrl" class="input-field" placeholder="Paste Audio/Video Link">
+        
         <div style="display:flex; gap:10px;">
-            <select id="srcLang" class="input-field"><option value="auto">Auto</option><option value="hi">Hindi</option><option value="en">English</option></select>
-            <select id="task" class="input-field"><option value="transcribe">Original</option><option value="translate">English</option></select>
+            <select id="srcLang" class="input-field"><option value="auto">Auto Detect</option><option value="hi">Hindi</option><option value="en">English</option></select>
+            <select id="task" class="input-field"><option value="transcribe">Original</option><option value="translate">Translate English</option></select>
         </div>
-        <input type="email" id="targetEmail" class="input-field" placeholder="Result Email ID">
+        
+        <input type="email" id="targetEmail" class="input-field" placeholder="Aapka Email ID">
         <input type="password" id="gToken" class="input-field" placeholder="GitHub Token">
-        <button class="btn" onclick="runAI()">🎙️ Send to Email</button>
-        <div id="status" style="text-align:center; margin-top:15px; font-size:12px; color:#888;">Ready</div>
+        
+        <button class="btn" onclick="runAI()">🎙️ Transcribe & Send</button>
+        <div id="status" style="text-align:center; margin-top:15px; color:#888; font-size:13px;">System: Ready</div>
     </div>
 
     <script>
         async function runAI() {
-            const url = document.getElementById('audioUrl').value;
-            const email = document.getElementById('targetEmail').value;
-            const token = document.getElementById('gToken').value;
-            if(!url || !email || !token) { alert("AI details missing!"); return; }
-            document.getElementById('status').innerText = "⏳ AI Engine Processing...";
+            const urlInp = document.getElementById('audioUrl');
+            const emailInp = document.getElementById('targetEmail');
+            const tokenInp = document.getElementById('gToken');
+            const status = document.getElementById('status');
+
+            if (!urlInp.value.trim()) { alert("⚠️ Bhai, Video link toh paste karo!"); urlInp.focus(); return; }
+            if (!emailInp.value.trim()) { alert("⚠️ Bhai, Email ID missing hai!"); emailInp.focus(); return; }
+            if (!tokenInp.value.trim()) { alert("⚠️ Bhai, GitHub Token daalna zaroori hai!"); tokenInp.focus(); return; }
+
+            status.innerText = "⏳ AI Engine Processing...";
             const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/transcribe.yml/dispatches', {
-                method: 'POST', headers: { 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ ref: 'main', inputs: { file_url: url, email: email, language: document.getElementById('srcLang').value, task: document.getElementById('task').value } })
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${tokenInp.value.trim()}` },
+                body: JSON.stringify({ 
+                    ref: 'main', 
+                    inputs: { 
+                        file_url: urlInp.value.trim(), 
+                        email: emailInp.value.trim(), 
+                        language: document.getElementById('srcLang').value, 
+                        task: document.getElementById('task').value 
+                    } 
+                })
             });
-            if(res.status === 204) document.getElementById('status').innerText = "✅ Sent! Check Email in 5-10 mins.";
+            if(res.status === 204) status.innerText = "✅ Request Sent! Check Email in 10 mins.";
         }
     </script>
 </body>
