@@ -3,94 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVE YOUTUBE PRO</title>
+    <title>MASTER DASHBOARD</title>
     <style>
-        :root {
-            --red-grad: linear-gradient(135deg, #ff0000 0%, #cc0000 100%);
-            --blue-grad: linear-gradient(135deg, #0088ff 0%, #00d4ff 100%);
-            --glass: rgba(255, 255, 255, 0.05);
-        }
-        body { font-family: 'Inter', sans-serif; background: #0a0a0c; background-image: radial-gradient(circle at 50% -20%, #440000 0%, #0a0a0c 80%); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; }
-        .container { width: 100%; max-width: 420px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; padding: 25px; margin-bottom: 20px; box-sizing: border-box; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
-        .header h1 { font-size: 28px; text-align: center; margin: 0; font-weight: 900; text-transform: uppercase; letter-spacing: 1px; }
-        .v-live h1 { background: var(--red-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .v-ai h1 { background: var(--blue-grad); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .input-field, .vLink { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; color: white; margin-bottom: 10px; box-sizing: border-box; font-size: 14px; transition: 0.3s; }
-        .input-field:focus { outline: none; border-color: #00d4ff; background: rgba(0,212,255,0.05); }
-        .timer-config { display: flex; gap: 10px; margin-bottom: 10px; }
-        .timer-config input, .timer-config select { flex: 1; margin-bottom: 0; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 18px; color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; transition: 0.3s; margin-top: 10px; font-size: 15px; }
-        #btn-live { background: var(--red-grad); box-shadow: 0 10px 20px rgba(255,0,0,0.2); }
-        #btn-ai { background: var(--blue-grad); box-shadow: 0 10px 20px rgba(0,212,255,0.2); }
-        .btn:active { transform: scale(0.96); }
-        .status { font-size: 12px; text-align: center; margin-top: 15px; color: #888; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 10px; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0c; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
+        .menu-card { width: 90%; max-width: 350px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 30px; text-align: center; margin-bottom: 20px; transition: 0.3s; text-decoration: none; color: white; }
+        .menu-card:active { transform: scale(0.95); }
+        .live-btn { border-left: 5px solid #ff0000; background: linear-gradient(90deg, rgba(255,0,0,0.1), transparent); }
+        .ai-btn { border-left: 5px solid #00d4ff; background: linear-gradient(90deg, rgba(0,212,255,0.1), transparent); }
+        h2 { margin: 0; font-size: 22px; text-transform: uppercase; }
+        p { font-size: 12px; color: #888; margin-top: 5px; }
     </style>
 </head>
 <body>
 
-<div class="container v-live">
-    <div class="header"><h1>LIVE YOUTUBE</h1></div>
-    <p style="text-align:center; font-size:11px; color:#777; margin-bottom:15px;">Smart Multi-Link Streamer</p>
-    <div id="live-inputs">
-        <input type="text" class="vLink" placeholder="Video Link 1 (Main)">
-        <input type="text" class="vLink" placeholder="Video Link 2 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 3 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 4 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 5 (Optional)">
-    </div>
-    <input type="password" id="sKey" class="input-field" placeholder="YouTube Stream Key">
-    <div class="timer-config">
-        <input type="number" id="durVal" class="input-field" placeholder="Time">
-        <select id="durUnit" class="input-field"><option value="minutes">Min</option><option value="hours">Hrs</option></select>
-    </div>
-    <input type="password" id="gToken" class="input-field" placeholder="GitHub Token (ghp_...)">
-    <button id="btn-live" class="btn" onclick="runLive()">🚀 Start Live Now</button>
-    <div id="live-status" class="status">Engine: Standby</div>
-</div>
+    <h1 style="margin-bottom: 40px; letter-spacing: 2px;">V3.5 PRO PANEL</h1>
 
-<div class="container v-ai">
-    <div class="header"><h1>AI TRANSCRIBER</h1></div>
-    <p style="text-align:center; font-size:11px; color:#777; margin-bottom:15px;">AI Voice-to-Text Engine</p>
-    <input type="text" id="audioUrl" class="input-field" placeholder="Paste Video/Audio Link">
-    <div class="timer-config">
-        <select id="srcLang" class="input-field"><option value="auto">Auto Detect</option><option value="hi">Hindi</option><option value="en">English</option></select>
-        <select id="task" class="input-field"><option value="transcribe">Original</option><option value="translate">To English</option></select>
-    </div>
-    <input type="email" id="targetEmail" class="input-field" placeholder="Result Email Address">
-    <button id="btn-ai" class="btn" onclick="runAI()">🎙️ Transcribe & Email</button>
-    <div id="ai-status" class="status">AI Status: Ready</div>
-</div>
+    <a href="live.html" class="menu-card live-btn">
+        <h2>🚀 YouTube Live</h2>
+        <p>Start Multi-Link Stream (5 Boxes)</p>
+    </a>
 
-<script>
-    async function runLive() {
-        const links = Array.from(document.querySelectorAll('.vLink')).map(i => i.value.trim()).filter(l => l !== "");
-        const token = document.getElementById('gToken').value;
-        const skey = document.getElementById('sKey').value;
-        const val = document.getElementById('durVal').value;
-        const unit = document.getElementById('durUnit').value;
-        if(!links[0] || !token || !skey || !val) { alert("Details missing!"); return; }
-        
-        document.getElementById('live-status').innerText = "⏳ Deploying Stream...";
-        const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
-            method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-            body: JSON.stringify({ ref: 'main', inputs: { video_urls: links.join(','), duration: (parseInt(val)*(unit==="minutes"?60:3600)).toString(), stream_key: skey } })
-        });
-        if(res.status === 204) { document.getElementById('live-status').innerText = "✅ Live Started!"; document.getElementById('live-status').style.color = "#00ff88"; }
-    }
+    <a href="transcribe.html" class="menu-card ai-btn">
+        <h2>🎙️ AI Transcribe</h2>
+        <p>Voice-to-Text (Email Result)</p>
+    </a>
 
-    async function runAI() {
-        const url = document.getElementById('audioUrl').value;
-        const email = document.getElementById('targetEmail').value;
-        const token = document.getElementById('gToken').value;
-        if(!url || !email || !token) { alert("AI details missing!"); return; }
-
-        document.getElementById('ai-status').innerText = "⏳ AI Engine Processing...";
-        const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/transcribe.yml/dispatches', {
-            method: 'POST', headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-            body: JSON.stringify({ ref: 'main', inputs: { file_url: url, email: email, language: document.getElementById('srcLang').value, task: document.getElementById('task').value } })
-        });
-        if(res.status === 204) { document.getElementById('ai-status').innerText = "✅ Sent! Check Email in 5-10 mins."; document.getElementById('ai-status').style.color = "#00d4ff"; }
-    }
-</script>
 </body>
 </html>
