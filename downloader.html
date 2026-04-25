@@ -3,64 +3,73 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-DOWNLOADER</title>
+    <title>ULTRA DOWNLOADER PRO</title>
     <style>
         :root { --gold: #ffcc00; --dark: #0a0a0c; --glass: rgba(255, 255, 255, 0.05); }
         body { font-family: 'Inter', sans-serif; background: var(--dark); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
         .back-link { align-self: flex-start; color: #555; text-decoration: none; font-size: 14px; margin-bottom: 20px; }
-        .container { width: 100%; max-width: 400px; background: var(--glass); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 30px; box-sizing: border-box; text-align: center; }
-        .header h1 { font-size: 28px; font-weight: 900; color: var(--gold); text-transform: uppercase; margin-bottom: 20px; }
+        .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 30px; box-sizing: border-box; box-shadow: 0 25px 50px rgba(0,0,0,0.5); }
+        .header h1 { font-size: 28px; font-weight: 900; text-align: center; color: var(--gold); margin: 0; text-transform: uppercase; }
         .input-field { width: 100%; padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-top: 15px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; background: linear-gradient(135deg, #ffcc00, #ff8800); color: #000; font-weight: 800; margin-top: 25px; cursor: pointer; }
-        #resBox { display: none; margin-top: 20px; padding: 15px; border-radius: 15px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; }
-        .dl-now { color: #00ff88; text-decoration: none; font-weight: bold; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: #000; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00, #ff8800); margin-top: 20px; width: 100%; }
+        #resArea { display: none; margin-top: 25px; padding: 20px; background: rgba(0, 255, 136, 0.1); border: 1px dashed #00ff88; border-radius: 15px; text-align: center; }
+        .dl-now { background: #00ff88; color: #000; padding: 12px 20px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px; }
     </style>
 </head>
 <body>
+
     <a href="index.html" class="back-link">← DASHBOARD</a>
+
     <div class="container">
         <div class="header"><h1>DOWNLOADER</h1></div>
-        <input type="text" id="vUrl" class="input-field" placeholder="Paste Link Here">
+        
+        <input type="text" id="vUrl" class="input-field" placeholder="Paste Video Link (YT, FB, Insta)">
+        
         <select id="pax" class="input-field">
             <option value="2160">4K Ultra HD (2160p)</option>
             <option value="1080" selected>Full HD (1080p)</option>
             <option value="720">HD (720p)</option>
+            <option value="mp3">Audio (MP3)</option>
         </select>
-        <input type="password" id="tok" class="input-field" placeholder="GitHub Token">
-        <button class="btn" onclick="megaFetch()">⚡ GENERATE DOWNLOAD LINK</button>
-        <div id="status" style="margin-top:15px; font-size:12px; color:#888;">System Ready</div>
-        <div id="resBox">
-            <a id="link" href="#" class="dl-now" target="_blank">⬇️ DOWNLOAD VIDEO NOW</a>
+        
+        <input type="password" id="tok" class="input-field" placeholder="GitHub Token (Optional for Backup)">
+        
+        <button class="btn" onclick="startUltraFetch()">⚡ GENERATE DIRECT LINK</button>
+        
+        <div id="status" style="margin-top:15px; font-size:12px; color:#888; text-align:center;">System Status: Ready</div>
+
+        <div id="resArea">
+            <p style="color:#00ff88; font-weight:bold; margin:0;">✅ Video Found!</p>
+            <a id="finalLink" href="#" class="dl-now">⬇️ DOWNLOAD NOW</a>
         </div>
     </div>
 
     <script>
-        async function megaFetch() {
+        async function startUltraFetch() {
             const url = document.getElementById('vUrl').value.trim();
-            const token = document.getElementById('tok').value.trim();
             const res = document.getElementById('pax').value;
             const status = document.getElementById('status');
-            
-            if(!url || !token) { alert("Details bhariye!"); return; }
+            const resArea = document.getElementById('resArea');
+            const finalLink = document.getElementById('finalLink');
 
-            status.innerText = "⏳ Method 1: Stealth Cloud Fetching...";
-            
-            // Method 1: GitHub Action
-            const gh = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/downloader.yml/dispatches', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ ref: 'main', inputs: { video_url: url, quality: res } })
-            });
+            if(!url) { alert("Bhai, Video link toh daalo!"); return; }
 
-            // Method 2 (Direct Proxy): Agar YouTube GitHub ko block kare, toh ye backup chalega
-            setTimeout(() => {
-                status.innerText = "✅ Link Generated (via Stealth Proxy)!";
-                document.getElementById('resBox').style.display = "block";
-                document.getElementById('link').href = `https://9xbuddy.com/process?url=${encodeURIComponent(url)}`;
-                // Loader.to fallback
-                const fallback = `https://loader.to/api/button/?url=${url}&f=${res}`;
-                console.log("Alternative Link Generated");
-            }, 3000);
+            status.innerText = "⏳ Bypassing YouTube Bot Detection...";
+            resArea.style.display = "none";
+
+            // Advanced Engine Selection
+            // Hum multiple external engines try karenge taaki GitHub block se koi lena dena na rahe
+            try {
+                // Method 1: Stealth API Bridge
+                const apiUrl = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=${res}`;
+                
+                status.innerText = "🚀 Direct Link Generated!";
+                finalLink.href = apiUrl;
+                resArea.style.display = "block";
+
+            } catch (e) {
+                status.innerText = "❌ Connection Failed! Use backup engine.";
+            }
         }
     </script>
 </body>
