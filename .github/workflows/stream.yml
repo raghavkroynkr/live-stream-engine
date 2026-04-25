@@ -12,28 +12,29 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4  # Updated to v4 to fix deprecation warning
+        uses: actions/checkout@v4
 
       - name: Install Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-          pip install yt-dlp  # Reliable way to install
+          python3 -m pip install --upgrade yt-dlp
 
       - name: Run Streaming Engine
         env:
           YOUTUBE_STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
-          # Direct link nikalna aur error check karna
-          VIDEO_URL=$(yt-dlp -f "best[ext=mp4]/best" -g "${{ github.event.inputs.video_url }}")
+          # Video ka direct link fetch kar rahe hain
+          VIDEO_URL=$(yt-dlp -f "best" -g "${{ github.event.inputs.video_url }}")
           
+          # Agar link nahi mila toh error dikhaye
           if [ -z "$VIDEO_URL" ]; then
-            echo "Error: Video link nahi mil saka. Link sahi se check karein."
+            echo "Error: Could not fetch video URL"
             exit 1
           fi
 
-          # Streaming start karna
+          # YouTube Server par stream bhej rahe hain
           ffmpeg -re -i "$VIDEO_URL" \
-          -c:v libx264 -preset veryfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
+          -c:v libx264 -preset superfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
           -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY"
