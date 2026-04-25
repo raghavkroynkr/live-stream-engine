@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Panel</title>
+    <style>
+        body { font-family: sans-serif; text-align: center; padding: 20px; background: #f0f2f5; }
+        .card { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); max-width: 350px; margin: auto; }
+        input { width: 100%; padding: 12px; margin: 10px 0; border-radius: 8px; border: 1px solid #ccc; box-sizing: border-box; }
+        button { width: 100%; padding: 15px; background: #FF0000; color: white; border: none; border-radius: 8px; font-weight: bold; font-size: 16px; cursor: pointer; }
+        #status { margin-top: 15px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h2 style="color: #FF0000;">YouTube Live Engine</h2>
+        <input type="text" id="vUrl" placeholder="Video Link Paste Karein">
+        <input type="password" id="gToken" placeholder="GitHub Token (ghp_...)">
+        <button onclick="start()">GO LIVE 🚀</button>
+        <div id="status">Status: Ready</div>
+    </div>
+    <script>
+        async function start() {
+            const url = document.getElementById('vUrl').value;
+            const token = document.getElementById('gToken').value;
+            const status = document.getElementById('status');
+            if(!url || !token) { alert("Link aur Token dono chahiye!"); return; }
+            status.innerText = "Processing...";
+            const res = await fetch('https://api.github.com/repos/raghavkroykr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+                body: JSON.stringify({ ref: 'main', inputs: { video_url: url } })
+            });
+            if (res.status === 204) { status.innerText = "Success! ✅ YT Dashboard check karein."; status.style.color = "green"; }
+            else { status.innerText = "Error! Token galat hai ❌"; status.style.color = "red"; }
+        }
+    </script>
+</body>
+</html>
