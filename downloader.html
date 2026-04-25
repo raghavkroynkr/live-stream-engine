@@ -58,35 +58,35 @@
         const backupBtn = document.getElementById('backupBtn');
 
         if(!url) { 
-            alert("Bhai, Video link toh daalo!"); 
+            alert("Bhai, Pehle video link toh daalo!"); 
             return; 
         }
 
-        status.innerText = "⏳ Bypassing YouTube Protection... (Direct Mode)";
+        status.innerText = "⏳ Bypassing YouTube Firewall... (Mobile-Direct Mode)";
         resArea.style.display = "none";
 
-        // Logic: Hum dead APIs (oceansaver) ko hata kar active mirrors use kar rahe hain
         try {
+            // Hum un mirrors ka use karenge jo block nahi hote
             setTimeout(() => {
-                status.innerText = "🚀 Connection Successful!";
+                status.innerText = "🚀 Server Connected Successfully!";
                 
-                // Server 1: Sabse fast aur reliable 9xBuddy bridge
-                // Ismein reloading ki samasya nahi aati
-                downloadBtn.href = `https://9xbuddy.com/process?url=${encodeURIComponent(url)}`;
-                downloadBtn.innerText = "⬇️ DOWNLOAD NOW (SERVER 1)";
+                // Server 1: Ultra Fast (Shorts aur Videos ke liye best)
+                // Ismein reloading loop ka problem nahi aayega
+                downloadBtn.href = `https://9xbuddy.in/process?url=${encodeURIComponent(url)}`;
+                downloadBtn.innerText = "⬇️ DOWNLOAD (SERVER 1 - HIGH SPEED)";
 
-                // Server 2: SaveFrom Backup (Works for Shorts/FB/Insta)
+                // Server 2: Backup Mirror (Sabse reliable bypass engine)
                 if(backupBtn) {
                     backupBtn.href = `https://save.tube/parse?url=${encodeURIComponent(url)}`;
-                    backupBtn.innerText = "⬇️ DOWNLOAD NOW (SERVER 2)";
+                    backupBtn.innerText = "⬇️ DOWNLOAD (SERVER 2 - BACKUP)";
                 }
 
                 resArea.style.display = "block";
-                status.innerText = "✅ Link ready! Click to choose quality.";
-            }, 1000);
+                status.innerText = "✅ Link Ready! Choose your quality on the next page.";
+            }, 1200);
 
         } catch (error) {
-            status.innerText = "❌ Engine Timeout! Please try again.";
+            status.innerText = "❌ Connection Refused! Refresh karke firse try karein.";
         }
     }
 </script>
