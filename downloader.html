@@ -16,7 +16,7 @@
         .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: #000; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00, #ff8800); margin-top: 25px; transition: 0.3s; }
         .btn:active { transform: scale(0.98); }
         #resArea { display: none; margin-top: 25px; padding: 20px; border-radius: 15px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; animation: slideUp 0.4s ease; }
-        .dl-now { background: #00ff88; color: #000; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px; }
+        .dl-now { background: #00ff88; color: #000; padding: 12px 25px; border-radius: 10px; text-decoration: none; font-weight: bold; display: inline-block; margin-top: 10px; width: 80%; }
         @keyframes slideUp { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
     </style>
 </head>
@@ -34,7 +34,7 @@
             <option value="1080">Full HD (1080p)</option>
             <option value="720" selected>HD (720p)</option>
             <option value="480">SD (480p)</option>
-            <option value="max">Best Available (4K/2K)</option>
+            <option value="mp3">Audio Only (MP3)</option>
         </select>
         
         <button class="btn" onclick="fetchVideo()">⚡ GET DOWNLOAD LINK</button>
@@ -43,47 +43,40 @@
 
         <div id="resArea">
             <p style="color:#00ff88; font-weight:bold; margin:0 0 10px 0;">✅ Ready to Download!</p>
-            <a id="downloadBtn" href="#" class="dl-now" target="_blank">⬇️ CLICK TO DOWNLOAD</a>
+            <a id="downloadBtn" href="#" class="dl-now" target="_blank">⬇️ SERVER 1 (Direct)</a>
+            <a id="backupBtn" href="#" class="dl-now" target="_blank" style="background:#ffcc00; margin-top:5px;">⬇️ SERVER 2 (Backup)</a>
         </div>
     </div>
 
 <script>
-    async function fetchVideo() {
-    const url = document.getElementById('videoUrl').value.trim();
-    const quality = document.getElementById('quality').value;
-    const status = document.getElementById('status');
-    const resArea = document.getElementById('resArea');
-    const downloadBtn = document.getElementById('downloadBtn');
+    function fetchVideo() {
+        const url = document.getElementById('videoUrl').value.trim();
+        const quality = document.getElementById('quality').value;
+        const status = document.getElementById('status');
+        const resArea = document.getElementById('resArea');
 
-    if(!url) { alert("Bhai, Video link daalna zaroori hai!"); return; }
+        if(!url) { alert("Bhai, Video link daalna zaroori hai!"); return; }
 
-    status.innerText = "⏳ Direct Engine Connecting...";
-    resArea.style.display = "none";
+        status.innerText = "⏳ Bypassing YouTube Protection...";
+        resArea.style.display = "none";
 
-    // Method: Direct Jump Engine (No Loading Screen)
-    try {
-        // Yeh URL seedha download server ko trigger karega
-        const directDownloadUrl = `https://p.oceansaver.in/api/download.php?url=${encodeURIComponent(url)}&format=${quality === 'mp3' ? 'mp3' : 'mp4'}&copyright=0`;
-
+        // Logic: Hum direct external APIs ko trigger kar rahe hain jo block nahi hote
         setTimeout(() => {
             status.innerText = "🚀 Connection Successful!";
             
-            // Link ko button mein set karna
-            downloadBtn.href = directDownloadUrl;
+            // Engine 1: OceanSaver API
+            const engine1 = `https://p.oceansaver.in/api/download.php?url=${encodeURIComponent(url)}&format=${quality === 'mp3' ? 'mp3' : 'mp4'}`;
             
-            // Sabse bada fix: Click hone par page reload na ho, seedha link open ho
-            downloadBtn.onclick = function(e) {
-                status.innerText = "✅ Download Started! Check Notification Bar.";
-            };
+            // Engine 2: Loader API (Backup)
+            const engine2 = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=${quality}`;
+
+            document.getElementById('downloadBtn').href = engine1;
+            document.getElementById('backupBtn').href = engine2;
 
             resArea.style.display = "block";
-        }, 1500);
-
-    } catch (error) {
-        status.innerText = "❌ Engine Timeout! Refresh and try again.";
+            status.innerText = "✅ Link ready! Click below.";
+        }, 1200);
     }
-}
-
 </script>
 
 </body>
