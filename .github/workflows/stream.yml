@@ -1,38 +1,46 @@
-name: Stream Link to YouTube Live
+name: Ultimate Scheduled Looper
 
 on:
   workflow_dispatch:
     inputs:
-      video_url:
-        description: 'YouTube Video Link'
+      video_urls:
+        description: 'Comma separated links'
+        required: true
+      duration:
+        description: 'Duration in seconds'
         required: true
 
 jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: Install Tools
+      - name: Setup Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-          python3 -m pip install --upgrade yt-dlp
 
-      - name: Start Streaming Engine
+      - name: Run Engine
         env:
-          YOUTUBE_STREAM_KEY: ${{ secrets.STREAM_KEY }}
+          KEY: ${{ secrets.STREAM_KEY }}
         run: |
-          # Sabse pehle user-agent badal kar link nikalne ki koshish
-          VIDEO_URL=$(yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" -f "best" -g "${{ github.event.inputs.video_url }}")
+          # Links ko array mein todna
+          IFS=',' read -ra ADDR <<< "${{ github.event.inputs.video_urls }}"
           
-          if [ -z "$VIDEO_URL" ]; then
-            echo "Error: YouTube block kar raha hai. Ek baar normal video link try karein."
-            exit 1
-          fi
+          # Playlist taiyar karna
+          touch playlist.txt
+          for i in "${ADDR[@]}"; do
+            echo "file '$i'" >> playlist.txt
+          done
 
-          # FFmpeg Streaming
-          ffmpeg -re -i "$VIDEO_URL" \
-          -vcodec libx264 -preset superfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
-          -pix_fmt yuv420p -g 60 -acodec aac -b:a 128k -f flv "rtmp://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY"
+          echo "Engine Ready! ${#ADDR[@]} video(s) mili hain."
+          echo "Timer: ${{ github.event.inputs.duration }} seconds."
+
+          # timeout timer control karega, stream_loop playlist ko repeat karega
+          timeout ${{ github.event.inputs.duration }}s ffmpeg -re -f concat -safe 0 \
+          -protocol_whitelist file,http,https,tcp,tls -stream_loop -1 -i playlist.txt \
+          -vcodec libx264 -preset superfast -b:v 3000k -maxrate 3000k -bufsize 6000k \
+          -pix_fmt yuv420p -g 60 -acodec aac -b:a 128k -ar 44100 \
+          -f flv "rtmp://a.rtmp.youtube.com/live2/$KEY" || echo "Timer Stop Ho Gaya."
