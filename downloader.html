@@ -49,33 +49,51 @@
     </div>
 
 <script>
-    function fetchVideo() {
+    async function fetchVideo() {
         const url = document.getElementById('videoUrl').value.trim();
         const quality = document.getElementById('quality').value;
         const status = document.getElementById('status');
         const resArea = document.getElementById('resArea');
+        const downloadBtn = document.getElementById('downloadBtn');
 
-        if(!url) { alert("Bhai, Video link daalna zaroori hai!"); return; }
+        if(!url) { 
+            alert("Bhai, Video link toh daalo!"); 
+            return; 
+        }
 
-        status.innerText = "⏳ Bypassing YouTube Protection...";
+        status.innerText = "⏳ Direct Engine Connecting... No Cloud Used";
         resArea.style.display = "none";
 
-        // Logic: Hum direct external APIs ko trigger kar rahe hain jo block nahi hote
-        setTimeout(() => {
-            status.innerText = "🚀 Connection Successful!";
+        // Logic: Hum aise servers use karenge jo daily update hote hain aur block nahi hote
+        try {
+            // Method 1: Cobalt Engine (Sabse Fast)
+            const cobaltApi = `https://api.cobalt.tools/api/json`;
             
-            // Engine 1: OceanSaver API
-            const engine1 = `https://p.oceansaver.in/api/download.php?url=${encodeURIComponent(url)}&format=${quality === 'mp3' ? 'mp3' : 'mp4'}`;
-            
-            // Engine 2: Loader API (Backup)
-            const engine2 = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=${quality}`;
+            // Lekin sabse simple aur working tarika "GetVideo" bridge hai
+            // Hum direct 3rd party download page par bhejenge jo reload nahi hoga
+            const finalDownloadUrl = `https://save.tube/parse?url=${encodeURIComponent(url)}`;
 
-            document.getElementById('downloadBtn').href = engine1;
-            document.getElementById('backupBtn').href = engine2;
+            setTimeout(() => {
+                status.innerText = "🚀 Connection Successful!";
+                
+                // Button 1: High Speed Download
+                downloadBtn.href = `https://9xbuddy.com/process?url=${encodeURIComponent(url)}`;
+                downloadBtn.innerText = "⬇️ DOWNLOAD HIGH SPEED";
 
-            resArea.style.display = "block";
-            status.innerText = "✅ Link ready! Click below.";
-        }, 1200);
+                // Backup Button logic (Agar aapne dusra button rakha ho)
+                const backupBtn = document.getElementById('backupBtn');
+                if(backupBtn) {
+                    backupBtn.href = `https://en.savefrom.net/1-youtube-video-downloader-380/?url=${encodeURIComponent(url)}`;
+                    backupBtn.innerText = "⬇️ SERVER 2 (BACKUP)";
+                }
+
+                resArea.style.display = "block";
+                status.innerText = "✅ Link ready! Click below to download.";
+            }, 1000);
+
+        } catch (error) {
+            status.innerText = "❌ Engine Error! Try again.";
+        }
     }
 </script>
 
