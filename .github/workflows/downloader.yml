@@ -1,4 +1,4 @@
-name: Universal Video Downloader
+name: Universal Video Downloader Pro
 
 on:
   workflow_dispatch:
@@ -7,27 +7,39 @@ on:
         required: true
       email:
         required: true
-      format:
+      quality:
         default: 'best'
 
 jobs:
-  download:
+  process-video:
     runs-on: ubuntu-latest
     steps:
-      - name: Install yt-dlp
+      - name: Setup yt-dlp
         run: |
-          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
-          sudo chmod a+rx /usr/local/bin/yt-dlp
+          python3 -m pip install --upgrade yt-dlp
 
-      - name: Download Video
+      - name: Fetch and Compress
         run: |
-          if [ "${{ github.event.inputs.format }}" = "mp3" ]; then
-            yt-dlp -x --audio-format mp3 -o "downloaded_file.%(ext)s" "${{ github.event.inputs.video_url }}"
+          QUALITY="${{ github.event.inputs.quality }}"
+          URL="${{ github.event.inputs.video_url }}"
+          
+          if [ "$QUALITY" = "mp3" ]; then
+            yt-dlp -x --audio-format mp3 -o "result.%(ext)s" "$URL"
+          elif [ "$QUALITY" = "best" ]; then
+            yt-dlp -f "best" -o "result.%(ext)s" "$URL"
           else
-            yt-dlp -f "best" -o "downloaded_file.%(ext)s" "${{ github.event.inputs.video_url }}"
+            # Specific Pixel Quality Logic
+            yt-dlp -f "bestvideo[height<=$QUALITY]+bestaudio/best[height<=$QUALITY]" --merge-output-format mp4 -o "result.%(ext)s" "$URL"
           fi
 
-      - name: Send via Email
+      - name: Create Download Link (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Video-Result-${{ github.run_id }}
+          path: result.*
+          retention-days: 1
+
+      - name: Send Backup to Email
         shell: python
         env:
           MAIL_USER: ${{ secrets.EMAIL_USER }}
@@ -36,19 +48,15 @@ jobs:
         run: |
           import smtplib, os
           from email.message import EmailMessage
-          
-          files = [f for f in os.listdir('.') if f.startswith('downloaded_file')]
+          files = [f for f in os.listdir('.') if f.startswith('result')]
           if not files: exit(1)
-          
           msg = EmailMessage()
-          msg["Subject"] = "Aapka Video Download Taiyar Hai!"
-          msg["From"] = os.environ["MAIL_USER"]
+          msg["Subject"] = "Video Download Ready!"
           msg["To"] = os.environ["TARGET_EMAIL"]
-          msg.set_content("Namaste! Aapka requested video niche attachment mein hai.")
-          
+          msg["From"] = os.environ["MAIL_USER"]
+          msg.set_content("Aapki file attach kar di gayi hai. Agar file badi hai toh GitHub Actions se link download karein.")
           with open(files[0], 'rb') as f:
               msg.add_attachment(f.read(), maintype='application', subtype='octet-stream', filename=files[0])
-          
           with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
               smtp.login(os.environ["MAIL_USER"], os.environ["MAIL_PASS"])
               smtp.send_message(msg)
