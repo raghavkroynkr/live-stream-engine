@@ -3,69 +3,53 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIDEO DOWNLOADER PRO</title>
+    <title>DOWNLOADER PRO</title>
     <style>
-        :root { --neon-gold: #ffcc00; --dark: #0a0a0c; --glass: rgba(255, 255, 255, 0.05); }
+        :root { --gold: #ffcc00; --dark: #0a0a0c; --glass: rgba(255, 255, 255, 0.05); }
         body { font-family: 'Inter', sans-serif; background: var(--dark); background-image: radial-gradient(circle at 50% -20%, #443300 0%, var(--dark) 80%); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 25px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6); box-sizing: border-box; }
-        .header h1 { font-size: 26px; font-weight: 900; text-align: center; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00 0%, #ff8800 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin: 0; }
-        .back-btn { align-self: flex-start; color: #666; text-decoration: none; margin-bottom: 20px; font-size: 14px; }
-        .input-field { width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; color: white; margin-bottom: 12px; box-sizing: border-box; font-size: 14px; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 18px; color: #000; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00, #ff8800); box-shadow: 0 10px 20px rgba(255, 204, 0, 0.2); transition: 0.3s; }
-        .btn:active { transform: scale(0.96); }
-        .status-bar { margin-top: 20px; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.2); font-size: 13px; text-align: center; color: #aaa; border: 1px solid rgba(255,255,255,0.05); }
+        .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 25px; box-sizing: border-box; }
+        .header h1 { font-size: 32px; font-weight: 900; text-align: center; color: var(--gold); margin: 0; }
+        .back-btn { align-self: flex-start; color: #666; text-decoration: none; font-size: 14px; margin-bottom: 15px; }
+        .input-field { width: 100%; padding: 16px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 15px; color: white; margin-bottom: 12px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 20px; border: none; border-radius: 20px; color: #000; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00, #ff8800); box-shadow: 0 10px 20px rgba(255, 204, 0, 0.3); }
     </style>
 </head>
 <body>
     <a href="index.html" class="back-btn">← DASHBOARD</a>
     <div class="container">
         <div class="header"><h1>DOWNLOADER</h1></div>
-        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:20px;">Support: YT, FB, Insta, Twitter</p>
+        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:25px;">Support: YT, FB, Insta, Twitter</p>
         
         <input type="text" id="vidUrl" class="input-field" placeholder="Paste Video Link">
-        <select id="quality" class="input-field">
-            <option value="best">Best Quality (Video)</option>
-            <option value="mp3">Audio Only (MP3)</option>
-        </select>
+        <select id="quality" class="input-field"><option value="best">Best Video</option><option value="mp3">Audio (MP3)</option></select>
         <input type="email" id="userEmail" class="input-field" placeholder="Aapka Email ID">
-        <input type="password" id="gToken" class="input-field" placeholder="GitHub Token (ghp_...)">
+        <input type="password" id="gToken" class="input-field" placeholder="GitHub Token">
         
-        <button class="btn" onclick="startDownload()">📥 Download & Email</button>
-        <div id="status" class="status-bar">System: Ready</div>
+        <button class="btn" onclick="startDownload()">📥 DOWNLOAD & EMAIL</button>
+        <div id="status" style="margin-top:15px; text-align:center; color:#888; font-size:13px;">System: Ready</div>
     </div>
 
     <script>
         async function startDownload() {
-            const url = document.getElementById('vidUrl').value.trim();
-            const email = document.getElementById('userEmail').value.trim();
-            const token = document.getElementById('gToken').value.trim();
+            const urlInp = document.getElementById('vidUrl');
+            const emailInp = document.getElementById('userEmail');
+            const tokenInp = document.getElementById('gToken');
             const status = document.getElementById('status');
 
-            if(!url || !email || !token) { 
-                alert("Bhai, sari details bhariye (Token aur Email zaroori hain)!"); 
-                return; 
-            }
+            if (!urlInp.value.trim()) { alert("⚠️ Bhai, Video link toh daalo!"); urlInp.focus(); return; }
+            if (!emailInp.value.trim()) { alert("⚠️ Bhai, Email ID khali hai!"); emailInp.focus(); return; }
+            if (!tokenInp.value.trim()) { alert("⚠️ Bhai, Token missing hai!"); tokenInp.focus(); return; }
 
-            status.innerText = "⏳ Request Sent to Cloud...";
-            try {
-                const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/downloader.yml/dispatches', {
-                    method: 'POST',
-                    headers: { 
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    },
-                    body: JSON.stringify({ 
-                        ref: 'main', 
-                        inputs: { video_url: url, email: email, format: document.getElementById('quality').value } 
-                    })
-                });
-                if(res.status === 204) {
-                    status.innerHTML = "✅ Processing! 5-8 mins mein Email check karein.";
-                    status.style.color = "#ffcc00";
-                } else {
-                    status.innerText = "❌ Error: Token invalid hai!";
-                }
-            } catch(e) { status.innerText = "❌ Connection Failed!"; }
+            status.innerText = "⏳ Processing Request...";
+            const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/downloader.yml/dispatches', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${tokenInp.value.trim()}` },
+                body: JSON.stringify({ 
+                    ref: 'main', 
+                    inputs: { video_url: urlInp.value.trim(), email: emailInp.value.trim(), format: document.getElementById('quality').value } 
+                })
+            });
+            if(res.status === 204) status.innerText = "✅ Process Started! Check Email soon.";
         }
     </script>
 </body>
