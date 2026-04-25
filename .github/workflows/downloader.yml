@@ -1,62 +1,25 @@
-name: Universal Video Downloader Pro
-
+name: Video Engine Stealth
 on:
   workflow_dispatch:
     inputs:
       video_url:
         required: true
-      email:
-        required: true
       quality:
-        default: 'best'
+        default: '1080'
 
 jobs:
-  process-video:
+  grab:
     runs-on: ubuntu-latest
     steps:
-      - name: Setup yt-dlp
+      - name: Stealth Setup
         run: |
           python3 -m pip install --upgrade yt-dlp
-
-      - name: Fetch and Compress
-        run: |
-          QUALITY="${{ github.event.inputs.quality }}"
-          URL="${{ github.event.inputs.video_url }}"
           
-          if [ "$QUALITY" = "mp3" ]; then
-            yt-dlp -x --audio-format mp3 -o "result.%(ext)s" "$URL"
-          elif [ "$QUALITY" = "best" ]; then
-            yt-dlp -f "best" -o "result.%(ext)s" "$URL"
-          else
-            # Specific Pixel Quality Logic
-            yt-dlp -f "bestvideo[height<=$QUALITY]+bestaudio/best[height<=$QUALITY]" --merge-output-format mp4 -o "result.%(ext)s" "$URL"
-          fi
-
-      - name: Create Download Link (Artifact)
-        uses: actions/upload-artifact@v4
-        with:
-          name: Video-Result-${{ github.run_id }}
-          path: result.*
-          retention-days: 1
-
-      - name: Send Backup to Email
-        shell: python
-        env:
-          MAIL_USER: ${{ secrets.EMAIL_USER }}
-          MAIL_PASS: ${{ secrets.EMAIL_PASS }}
-          TARGET_EMAIL: ${{ github.event.inputs.email }}
+      - name: Fetch Video Data
         run: |
-          import smtplib, os
-          from email.message import EmailMessage
-          files = [f for f in os.listdir('.') if f.startswith('result')]
-          if not files: exit(1)
-          msg = EmailMessage()
-          msg["Subject"] = "Video Download Ready!"
-          msg["To"] = os.environ["TARGET_EMAIL"]
-          msg["From"] = os.environ["MAIL_USER"]
-          msg.set_content("Aapki file attach kar di gayi hai. Agar file badi hai toh GitHub Actions se link download karein.")
-          with open(files[0], 'rb') as f:
-              msg.add_attachment(f.read(), maintype='application', subtype='octet-stream', filename=files[0])
-          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
-              smtp.login(os.environ["MAIL_USER"], os.environ["MAIL_PASS"])
-              smtp.send_message(msg)
+          # Bot bypass karne ke liye generic user-agent aur certificates ignore kiye hain
+          yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+          --no-check-certificates \
+          --prefer-free-formats \
+          -f "bestvideo[height<=${{ github.event.inputs.quality }}]+bestaudio/best" \
+          --get-url "${{ github.event.inputs.video_url }}"
