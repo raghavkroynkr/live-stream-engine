@@ -49,46 +49,41 @@
 
 <script>
     async function fetchVideo() {
-        const url = document.getElementById('videoUrl').value.trim();
-        const quality = document.getElementById('quality').value;
-        const status = document.getElementById('status');
-        const resArea = document.getElementById('resArea');
-        const downloadBtn = document.getElementById('downloadBtn');
+    const url = document.getElementById('videoUrl').value.trim();
+    const quality = document.getElementById('quality').value;
+    const status = document.getElementById('status');
+    const resArea = document.getElementById('resArea');
+    const downloadBtn = document.getElementById('downloadBtn');
 
-        if(!url) { alert("Bhai, Link toh daalo!"); return; }
+    if(!url) { alert("Bhai, Video link daalna zaroori hai!"); return; }
 
-        status.innerText = "⏳ Cloud Engine Bypassing... Please wait";
-        resArea.style.display = "none";
+    status.innerText = "⏳ Direct Engine Connecting...";
+    resArea.style.display = "none";
 
-        try {
-            // Hum multiple backup engines use karenge taaki link 100% mile
-            // Engine 1: Loader Pro
-            const mainEngine = `https://loader.to/api/button/?url=${encodeURIComponent(url)}&f=${quality}`;
+    // Method: Direct Jump Engine (No Loading Screen)
+    try {
+        // Yeh URL seedha download server ko trigger karega
+        const directDownloadUrl = `https://p.oceansaver.in/api/download.php?url=${encodeURIComponent(url)}&format=${quality === 'mp3' ? 'mp3' : 'mp4'}&copyright=0`;
+
+        setTimeout(() => {
+            status.innerText = "🚀 Connection Successful!";
             
-            // Engine 2: 9xBuddy Redirect (Backup)
-            const backupEngine = `https://9xbuddy.com/process?url=${encodeURIComponent(url)}`;
+            // Link ko button mein set karna
+            downloadBtn.href = directDownloadUrl;
+            
+            // Sabse bada fix: Click hone par page reload na ho, seedha link open ho
+            downloadBtn.onclick = function(e) {
+                status.innerText = "✅ Download Started! Check Notification Bar.";
+            };
 
-            setTimeout(() => {
-                status.innerText = "🚀 Successfully Bypassed!";
-                
-                // Hum button par dono options link kar sakte hain
-                // Pehle hum primary link try karenge
-                downloadBtn.href = mainEngine;
-                
-                // Agar loader.to block hai, toh backup link active kar denge
-                downloadBtn.onclick = function() {
-                    window.open(mainEngine, '_blank');
-                    // 1 second baad backup bhi open kar sakte hain agar primary fail ho
-                    return false;
-                };
+            resArea.style.display = "block";
+        }, 1500);
 
-                resArea.style.display = "block";
-            }, 2000);
-
-        } catch (error) {
-            status.innerText = "❌ Engine Error! Use Manual Search.";
-        }
+    } catch (error) {
+        status.innerText = "❌ Engine Timeout! Refresh and try again.";
     }
+}
+
 </script>
 
 </body>
