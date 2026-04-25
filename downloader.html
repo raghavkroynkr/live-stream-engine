@@ -1,47 +1,58 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>VIDEO DOWNLOADER PRO</title>
-    <style>
-        :root { --neon-gold: #ffcc00; --dark: #0a0a0c; --glass: rgba(255, 255, 255, 0.05); }
-        body { font-family: 'Inter', sans-serif; background: var(--dark); background-image: radial-gradient(circle at 50% -20%, #443300 0%, var(--dark) 80%); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 25px; box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6); box-sizing: border-box; }
-        .header h1 { font-size: 26px; font-weight: 900; text-align: center; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00 0%, #ff8800 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .back-btn { align-self: flex-start; color: #666; text-decoration: none; margin-bottom: 20px; font-size: 14px; }
-        .input-field { width: 100%; padding: 14px 18px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 14px; color: white; margin-bottom: 12px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 18px; color: #000; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00, #ff8800); box-shadow: 0 10px 20px rgba(255, 204, 0, 0.2); }
-        .status-bar { margin-top: 20px; padding: 12px; border-radius: 12px; background: rgba(0,0,0,0.2); font-size: 13px; text-align: center; color: #aaa; border: 1px solid rgba(255,255,255,0.05); }
-    </style>
-</head>
-<body>
-    <a href="index.html" class="back-btn">← DASHBOARD</a>
-    <div class="container">
-        <div class="header"><h1>DOWNLOADER</h1><p style="text-align:center; font-size:11px; color:#555; margin-top:5px;">All-in-One Video Grabber</p></div>
-        <div style="margin-top: 25px;">
-            <input type="text" id="vidUrl" class="input-field" placeholder="Paste Video Link (YouTube, Insta, FB...)">
-            <select id="quality" class="input-field"><option value="best">Best Quality</option><option value="mp4">MP4 Only</option><option value="mp3">Audio Only (MP3)</option></select>
-            <input type="email" id="userEmail" class="input-field" placeholder="Kahan bhejun? (Email ID)">
-            <input type="password" id="gToken" class="input-field" placeholder="GitHub Token">
-            <button class="btn" onclick="startDownload()">📥 Download & Email</button>
-        </div>
-        <div id="status" class="status-bar">Waiting for URL...</div>
-    </div>
-    <script>
-        async function startDownload() {
-            const url = document.getElementById('vidUrl').value;
-            const email = document.getElementById('userEmail').value;
-            const token = document.getElementById('gToken').value;
-            const status = document.getElementById('status');
-            if(!url || !email || !token) { alert("Details bhariye!"); return; }
-            status.innerText = "⏳ Requesting Cloud Download...";
-            const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/downloader.yml/dispatches', {
-                method: 'POST', headers: { 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ ref: 'main', inputs: { video_url: url, email: email, format: document.getElementById('quality').value } })
-            });
-            if(res.status === 204) status.innerHTML = "✅ Processing! Video email par aa jayegi.";
-        }
-    </script>
-</body>
-</html>
+name: Universal Video Downloader
+
+on:
+  workflow_dispatch:
+    inputs:
+      video_url:
+        required: true
+      email:
+        required: true
+      format:
+        default: 'best'
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install Latest yt-dlp
+        run: |
+          python3 -m pip install --upgrade yt-dlp
+
+      - name: Download Video (Bypass Mode)
+        run: |
+          # Ismein hum user-agent aur sleep time use kar rahe hain taaki bot na pakde
+          if [ "${{ github.event.inputs.format }}" = "mp3" ]; then
+            yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" \
+            --no-check-certificates --extract-audio --audio-format mp3 -o "downloaded_file.%(ext)s" "${{ github.event.inputs.video_url }}"
+          else
+            yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" \
+            --no-check-certificates -f "best" -o "downloaded_file.%(ext)s" "${{ github.event.inputs.video_url }}"
+          fi
+
+      - name: Send via Email
+        shell: python
+        env:
+          MAIL_USER: ${{ secrets.EMAIL_USER }}
+          MAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          TARGET_EMAIL: ${{ github.event.inputs.email }}
+        run: |
+          import smtplib, os
+          from email.message import EmailMessage
+          
+          files = [f for f in os.listdir('.') if f.startswith('downloaded_file')]
+          if not files:
+              print("Download failed, file not found")
+              exit(1)
+          
+          msg = EmailMessage()
+          msg["Subject"] = "Video Download Result"
+          msg["From"] = os.environ["MAIL_USER"]
+          msg["To"] = os.environ["TARGET_EMAIL"]
+          msg.set_content("Aapka video niche attachment mein hai.")
+          
+          with open(files[0], 'rb') as f:
+              msg.add_attachment(f.read(), maintype='application', subtype='octet-stream', filename=files[0])
+          
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+              smtp.login(os.environ["MAIL_USER"], os.environ["MAIL_PASS"])
+              smtp.send_message(msg)
