@@ -1,0 +1,64 @@
+name: Cloud APK Engine
+
+on:
+  workflow_dispatch:
+    inputs:
+      web_url:
+        required: true
+      app_name:
+        required: true
+      email:
+        required: true
+
+jobs:
+  build-apk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Build APK
+        run: |
+          # PWA to APK Conversion
+          bubblewrap init --manifest="${{ github.event.inputs.web_url }}/manifest.json" --skipConfig
+          bubblewrap build --skipConfig
+
+      - name: Send APK via Email
+        shell: python
+        env:
+          MAIL_USER: ${{ secrets.EMAIL_USER }}
+          MAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          TARGET_EMAIL: ${{ github.event.inputs.email }}
+          APP_NAME: ${{ github.event.inputs.app_name }}
+        run: |
+          import smtplib, os
+          from email.message import EmailMessage
+
+          # APK file dhoondhna
+          apk_files = [f for f in os.listdir('.') if f.endswith('.apk')]
+          if not apk_files:
+              exit(1)
+          
+          apk_path = apk_files[0]
+          
+          msg = EmailMessage()
+          msg["Subject"] = f"Aapka App Taiyar Hai: {os.environ['APP_NAME']}"
+          msg["From"] = os.environ["MAIL_USER"]
+          msg["To"] = os.environ["TARGET_EMAIL"]
+          msg.set_content(f"Namaste! Aapka professional ad-free APK ban chuka hai. Kripya attachment check karein.")
+
+          with open(apk_path, 'rb') as f:
+              file_data = f.read()
+              msg.add_attachment(file_data, maintype='application', subtype='vnd.android.package-archive', filename=f"{os.environ['APP_NAME']}.apk")
+
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+              smtp.login(os.environ["MAIL_USER"], os.environ["MAIL_PASS"])
+              smtp.send_message(msg)
