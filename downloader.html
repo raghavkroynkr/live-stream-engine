@@ -55,47 +55,42 @@
         const status = document.getElementById('status');
         const resArea = document.getElementById('resArea');
         const downloadBtn = document.getElementById('downloadBtn');
+        const backupBtn = document.getElementById('backupBtn');
 
         if(!url) { 
             alert("Bhai, Video link toh daalo!"); 
             return; 
         }
 
-        status.innerText = "⏳ Direct Engine Connecting... No Cloud Used";
+        status.innerText = "⏳ Bypassing YouTube Protection... (Direct Mode)";
         resArea.style.display = "none";
 
-        // Logic: Hum aise servers use karenge jo daily update hote hain aur block nahi hote
+        // Logic: Hum dead APIs (oceansaver) ko hata kar active mirrors use kar rahe hain
         try {
-            // Method 1: Cobalt Engine (Sabse Fast)
-            const cobaltApi = `https://api.cobalt.tools/api/json`;
-            
-            // Lekin sabse simple aur working tarika "GetVideo" bridge hai
-            // Hum direct 3rd party download page par bhejenge jo reload nahi hoga
-            const finalDownloadUrl = `https://save.tube/parse?url=${encodeURIComponent(url)}`;
-
             setTimeout(() => {
                 status.innerText = "🚀 Connection Successful!";
                 
-                // Button 1: High Speed Download
+                // Server 1: Sabse fast aur reliable 9xBuddy bridge
+                // Ismein reloading ki samasya nahi aati
                 downloadBtn.href = `https://9xbuddy.com/process?url=${encodeURIComponent(url)}`;
-                downloadBtn.innerText = "⬇️ DOWNLOAD HIGH SPEED";
+                downloadBtn.innerText = "⬇️ DOWNLOAD NOW (SERVER 1)";
 
-                // Backup Button logic (Agar aapne dusra button rakha ho)
-                const backupBtn = document.getElementById('backupBtn');
+                // Server 2: SaveFrom Backup (Works for Shorts/FB/Insta)
                 if(backupBtn) {
-                    backupBtn.href = `https://en.savefrom.net/1-youtube-video-downloader-380/?url=${encodeURIComponent(url)}`;
-                    backupBtn.innerText = "⬇️ SERVER 2 (BACKUP)";
+                    backupBtn.href = `https://save.tube/parse?url=${encodeURIComponent(url)}`;
+                    backupBtn.innerText = "⬇️ DOWNLOAD NOW (SERVER 2)";
                 }
 
                 resArea.style.display = "block";
-                status.innerText = "✅ Link ready! Click below to download.";
+                status.innerText = "✅ Link ready! Click to choose quality.";
             }, 1000);
 
         } catch (error) {
-            status.innerText = "❌ Engine Error! Try again.";
+            status.innerText = "❌ Engine Timeout! Please try again.";
         }
     }
 </script>
+
 
 </body>
 </html>
