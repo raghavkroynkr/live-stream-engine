@@ -3,38 +3,180 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Live Panel</title>
+    <title>Stream Engine Pro</title>
     <style>
-        body { font-family: sans-serif; text-align: center; padding: 20px; background: #f4f4f9; }
-        .card { background: white; padding: 30px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); max-width: 400px; margin: auto; }
-        input { width: 100%; padding: 15px; margin: 10px 0; border-radius: 10px; border: 1px solid #ddd; box-sizing: border-box; font-size: 14px; }
-        button { width: 100%; padding: 15px; background: #FF0000; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        #status { margin-top: 20px; font-weight: bold; color: #555; }
+        :root {
+            --primary: #ff0000;
+            --bg: #0f0f0f;
+            --card-bg: #1e1e1e;
+            --text: #ffffff;
+            --input-bg: #2a2a2a;
+        }
+        body { 
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: var(--bg);
+            color: var(--text);
+        }
+        .app-container {
+            width: 90%;
+            max-width: 400px;
+            background: var(--card-bg);
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            text-align: center;
+            border: 1px solid #333;
+        }
+        .logo-area {
+            margin-bottom: 30px;
+        }
+        .logo-icon {
+            width: 60px;
+            height: 60px;
+            background: var(--primary);
+            border-radius: 18px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 15px;
+            font-size: 30px;
+            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
+        }
+        h1 { font-size: 24px; margin: 0; letter-spacing: 1px; }
+        p { color: #aaa; font-size: 14px; margin-top: 5px; }
+        
+        .input-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #888;
+            margin-left: 5px;
+        }
+        input { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--input-bg);
+            border: 1px solid #333;
+            border-radius: 12px;
+            color: white;
+            font-size: 15px;
+            box-sizing: border-box;
+            transition: 0.3s;
+        }
+        input:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: #333;
+        }
+        button { 
+            width: 100%; 
+            padding: 16px; 
+            background: var(--primary); 
+            color: white; 
+            border: none; 
+            border-radius: 12px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            font-size: 16px; 
+            margin-top: 10px;
+            transition: 0.3s;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        button:active { transform: scale(0.98); }
+        
+        #status { 
+            margin-top: 25px; 
+            font-size: 14px;
+            padding: 12px;
+            border-radius: 8px;
+            display: none;
+        }
+        .success { background: rgba(0, 255, 0, 0.1); color: #4ade80; display: block !important; }
+        .error { background: rgba(255, 0, 0, 0.1); color: #f87171; display: block !important; }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2 style="color: #FF0000; margin-bottom: 5px;">YT Live Engine</h2>
-        <p style="font-size: 12px; color: #666;">Mobile Streaming Panel</p>
-        <input type="text" id="vUrl" placeholder="YouTube Video Link Yahan Dalein">
-        <input type="password" id="gToken" placeholder="GitHub Token (ghp_...)">
-        <button onclick="start()">GO LIVE 🚀</button>
-        <div id="status">Status: Ready</div>
+
+    <div class="app-container">
+        <div class="logo-area">
+            <div class="logo-icon">▶</div>
+            <h1>STREAM ENGINE</h1>
+            <p>Next-Gen Mobile Streamer</p>
+        </div>
+
+        <div class="input-group">
+            <label>YouTube Video Link</label>
+            <input type="text" id="vUrl" placeholder="https://youtube.com/watch?v=...">
+        </div>
+
+        <div class="input-group">
+            <label>GitHub Access Token</label>
+            <input type="password" id="gToken" placeholder="ghp_xxxxxxxxxxxxxxxx">
+        </div>
+
+        <button id="liveBtn" onclick="start()">GO LIVE 🚀</button>
+        <div id="status">Status: Waiting</div>
     </div>
+
     <script>
         async function start() {
             const url = document.getElementById('vUrl').value;
             const token = document.getElementById('gToken').value;
             const status = document.getElementById('status');
-            if(!url || !token) { alert("Link aur Token dono bhariye!"); return; }
-            status.innerText = "Processing... Connecting to GitHub Server";
-            const res = await fetch('https://api.github.com/repos/raghavkroykr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
-                method: 'POST',
-                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-                body: JSON.stringify({ ref: 'main', inputs: { video_url: url } })
-            });
-            if (res.status === 204) { status.innerText = "Success! ✅ Check your YouTube Studio."; status.style.color = "green"; }
-            else { status.innerText = "Error! Token invalid ya configuration galat hai. ❌"; status.style.color = "red"; }
+            const btn = document.getElementById('liveBtn');
+            
+            if(!url || !token) { 
+                alert("Please fill both details!"); 
+                return; 
+            }
+
+            status.className = '';
+            status.innerText = "⏳ Requesting Server...";
+            status.style.display = "block";
+            btn.disabled = true;
+            btn.innerText = "CONNECTING...";
+
+            // YAHAN AAPKA USERNAME CORRECT KAR DIYA HAI (raghavkroynkr)
+            const repoPath = "raghavkroynkr/live-stream-engine"; 
+            
+            try {
+                const res = await fetch(`https://api.github.com/repos/${repoPath}/actions/workflows/stream.yml/dispatches`, {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `Bearer ${token}`, 
+                        'Accept': 'application/vnd.github.v3+json' 
+                    },
+                    body: JSON.stringify({ ref: 'main', inputs: { video_url: url } })
+                });
+
+                if (res.status === 204) { 
+                    status.className = 'success';
+                    status.innerText = "✅ SUCCESS! Engine Started."; 
+                    btn.innerText = "STREAMING NOW";
+                } else { 
+                    const errorData = await res.json().catch(() => ({ message: "Check Token or Permissions" }));
+                    status.className = 'error';
+                    status.innerText = "❌ ERROR: " + errorData.message; 
+                    btn.disabled = false;
+                    btn.innerText = "RETRY LIVE";
+                }
+            } catch (e) {
+                status.className = 'error';
+                status.innerText = "❌ Connection Failed!";
+                btn.disabled = false;
+                btn.innerText = "GO LIVE 🚀";
+            }
         }
     </script>
 </body>
