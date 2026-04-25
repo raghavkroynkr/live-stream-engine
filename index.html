@@ -3,30 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MASTER DASHBOARD</title>
+    <title>V3.5 PRO PANEL</title>
     <style>
-        body { font-family: 'Inter', sans-serif; background: #0a0a0c; color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; }
-        .menu-card { width: 90%; max-width: 350px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 30px; text-align: center; margin-bottom: 20px; transition: 0.3s; text-decoration: none; color: white; }
-        .menu-card:active { transform: scale(0.95); }
-        .live-btn { border-left: 5px solid #ff0000; background: linear-gradient(90deg, rgba(255,0,0,0.1), transparent); }
-        .ai-btn { border-left: 5px solid #00d4ff; background: linear-gradient(90deg, rgba(0,212,255,0.1), transparent); }
-        h2 { margin: 0; font-size: 22px; text-transform: uppercase; }
-        p { font-size: 12px; color: #888; margin-top: 5px; }
+        :root { --red: #ff0000; --blue: #00d4ff; --dark: #0a0a0c; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
+        .menu-card { width: 100%; max-width: 360px; background: rgba(255,255,255,0.05); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 25px; margin-bottom: 20px; text-align: center; text-decoration: none; color: white; transition: 0.3s; box-sizing: border-box; }
+        .live-btn { border-left: 6px solid var(--red); background: linear-gradient(90deg, rgba(255,0,0,0.1), transparent); }
+        .ai-btn { border-left: 6px solid var(--blue); background: linear-gradient(90deg, rgba(0,212,255,0.1), transparent); }
+        .menu-card:active { transform: scale(0.96); }
+        h2 { margin: 0; font-size: 22px; text-transform: uppercase; letter-spacing: 1px; }
+        p { font-size: 12px; color: #777; margin-top: 8px; }
     </style>
 </head>
 <body>
-
-    <h1 style="margin-bottom: 40px; letter-spacing: 2px;">V3.5 PRO PANEL</h1>
-
+    <h1 style="margin-bottom: 30px; font-weight: 900; background: linear-gradient(white, #666); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">V3.5 PRO PANEL</h1>
+    
     <a href="live.html" class="menu-card live-btn">
         <h2>🚀 YouTube Live</h2>
-        <p>Start Multi-Link Stream (5 Boxes)</p>
+        <p>Multi-Link Streaming Engine (5 Slots)</p>
     </a>
 
     <a href="transcribe.html" class="menu-card ai-btn">
-        <h2>🎙️ AI Transcribe</h2>
-        <p>Voice-to-Text (Email Result)</p>
+        <h2>🎙️ AI Transcriber</h2>
+        <p>Global Voice-to-Text & Email Delivery</p>
     </a>
-
 </body>
 </html>
