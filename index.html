@@ -1,146 +1,18 @@
-<!DOCTYPE html>
-<html lang="hi">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVE YOUTUBE - Pro Streamer</title>
-    <style>
-        :root {
-            --neon-red: #ff0000;
-            --dark-bg: #050505;
-            --glass: rgba(255, 255, 255, 0.03);
-            --accent-gradient: linear-gradient(90deg, #ff0000 0%, #ff4b2b 100%);
-        }
-
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--dark-bg);
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.05) 0%, transparent 20%),
-                radial-gradient(circle at 90% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 20%);
-            color: white;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 15px;
-        }
-
-        .container {
-            width: 100%;
-            max-width: 400px;
-            background: var(--glass);
-            backdrop-filter: blur(30px);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 35px;
-            padding: 30px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .header { text-align: center; margin-bottom: 30px; }
-
-        .header h1 {
-            font-size: 32px;
-            font-weight: 900;
-            margin: 0;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            background: var(--accent-gradient);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
-        }
-
-        .header p { color: #666; font-size: 12px; font-weight: 500; margin-top: 5px; }
-
-        .vLink, .input-field {
-            width: 100%;
-            padding: 15px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 16px;
-            color: white;
-            font-size: 14px;
-            box-sizing: border-box;
-            margin-bottom: 12px;
-            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-        }
-
-        .vLink:focus, .input-field:focus {
-            outline: none;
-            border-color: var(--neon-red);
-            background: rgba(255, 255, 255, 0.08);
-            transform: scale(1.02);
-        }
-
-        .timer-config {
-            display: grid;
-            grid-template-columns: 1.8fr 1.2fr;
-            gap: 12px;
-            margin-bottom: 20px;
-        }
-
-        .btn-launch {
-            width: 100%;
-            padding: 20px;
-            background: var(--accent-gradient);
-            border: none;
-            border-radius: 20px;
-            color: white;
-            font-size: 16px;
-            font-weight: 800;
-            cursor: pointer;
-            transition: 0.3s;
-            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.25);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .btn-launch:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(255, 0, 0, 0.35); }
-        .btn-launch:active { transform: scale(0.95); }
-
-        #status-bar {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 15px;
-            background: rgba(0, 0, 0, 0.2);
-            font-size: 13px;
-            text-align: center;
-            color: #888;
-            border: 1px solid rgba(255, 255, 255, 0.03);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; }
-        .live { background: #00ff88; box-shadow: 0 0 15px #00ff88; animation: pulse 1.2s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
-    </style>
-</head>
-<body>
-
 <div class="container">
     <div class="header">
         <h1>LIVE YOUTUBE</h1>
-        <p>Smart Automation Technology</p>
+        <p>Pro Streaming Control</p>
     </div>
 
     <div id="inputs-wrapper">
         <input type="text" class="vLink" placeholder="Link 1 (Main Stream Video)">
-        <input type="text" class="vLink" placeholder="Link 2 (Queue Video)">
-        <input type="text" class="vLink" placeholder="Link 3 (Queue Video)">
-        <input type="text" class="vLink" placeholder="Link 4 (Queue Video)">
-        <input type="text" class="vLink" placeholder="Link 5 (Queue Video)">
+        <input type="text" class="vLink" placeholder="Link 2 (Optional)">
+        <input type="text" class="vLink" placeholder="Link 3 (Optional)">
+        <input type="text" class="vLink" placeholder="Link 4 (Optional)">
+        <input type="text" class="vLink" placeholder="Link 5 (Optional)">
     </div>
+
+    <input type="password" id="sKey" class="input-field" placeholder="YouTube Stream Key (xxxx-xxxx-xxxx-xxxx)" style="border-color: rgba(255, 0, 0, 0.3);">
 
     <div class="timer-config">
         <input type="number" id="durationValue" class="input-field" placeholder="Time">
@@ -151,7 +23,7 @@
         </select>
     </div>
 
-    <input type="password" id="gToken" class="input-field" placeholder="Enter Security Token">
+    <input type="password" id="gToken" class="input-field" placeholder="Enter GitHub Token">
 
     <button class="btn-launch" onclick="launchEngine()">
         <span>🚀</span> GO LIVE NOW
@@ -167,13 +39,14 @@
     async function launchEngine() {
         const links = Array.from(document.querySelectorAll('.vLink')).map(i => i.value.trim()).filter(l => l !== "");
         const token = document.getElementById('gToken').value;
+        const streamKey = document.getElementById('sKey').value; // Naya Stream Key variable
         const val = document.getElementById('durationValue').value;
         const unit = document.getElementById('durationUnit').value;
         const statusText = document.getElementById('status-text');
         const dot = document.getElementById('dot');
 
-        if (links.length === 0 || !token || !val) {
-            alert("Bhai, saari details dalo!"); return;
+        if (links.length === 0 || !token || !val || !streamKey) {
+            alert("Bhai, Stream Key aur baaki details zaroori hain!"); return;
         }
 
         let secs = parseInt(val);
@@ -181,21 +54,28 @@
         else if (unit === "hours") secs *= 3600;
         else if (unit === "days") secs *= 86400;
 
-        statusText.innerText = "Connecting...";
+        statusText.innerText = "Transmitting Key & Signal...";
         dot.classList.add('live');
 
         try {
             const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-                body: JSON.stringify({ ref: 'main', inputs: { video_urls: links.join(','), duration: secs.toString() } })
+                body: JSON.stringify({ 
+                    ref: 'main', 
+                    inputs: { 
+                        video_urls: links.join(','), 
+                        duration: secs.toString(),
+                        stream_key: streamKey // Stream Key yahan se bhej rahe hain
+                    } 
+                })
             });
 
             if (res.status === 204) {
-                statusText.innerText = "System Live!";
+                statusText.innerText = "Success! Live Started.";
                 statusText.style.color = "#00ff88";
             } else {
-                statusText.innerText = "Error: Check Connection";
+                statusText.innerText = "Error: Check Token/Key";
                 statusText.style.color = "#ff0000";
                 dot.classList.remove('live');
             }
@@ -205,6 +85,3 @@
         }
     }
 </script>
-
-</body>
-</html>
