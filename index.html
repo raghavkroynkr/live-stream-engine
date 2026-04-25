@@ -3,143 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Engine Pro V3.5</title>
+    <title>LIVE YOUTUBE - Pro Streamer</title>
     <style>
         :root {
-            --neon-red: #ff003c;
-            --dark-bg: #0a0a0c;
-            --glass: rgba(255, 255, 255, 0.05);
-            --accent-gradient: linear-gradient(135deg, #ff003c 0%, #ff4d00 100%);
+            --neon-red: #ff0000;
+            --dark-bg: #050505;
+            --glass: rgba(255, 255, 255, 0.03);
+            --accent-gradient: linear-gradient(90deg, #ff0000 0%, #ff4b2b 100%);
         }
 
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--dark-bg);
-            background-image: radial-gradient(circle at 50% -20%, #3d0000 0%, var(--dark-bg) 80%);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(255, 0, 0, 0.05) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(255, 0, 0, 0.05) 0%, transparent 20%);
             color: white;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px;
+            padding: 15px;
         }
 
         .container {
             width: 100%;
-            max-width: 420px;
+            max-width: 400px;
             background: var(--glass);
-            backdrop-filter: blur(25px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 32px;
+            backdrop-filter: blur(30px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 35px;
             padding: 30px;
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
         }
 
+        .header { text-align: center; margin-bottom: 30px; }
+
         .header h1 {
-            font-size: 26px;
-            font-weight: 800;
+            font-size: 32px;
+            font-weight: 900;
             margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 2px;
             background: var(--accent-gradient);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            letter-spacing: -1px;
-            text-align: center;
+            text-shadow: 0 0 30px rgba(255, 0, 0, 0.2);
         }
 
-        .header p {
-            color: #888;
-            font-size: 13px;
-            margin-bottom: 25px;
-            text-align: center;
-        }
+        .header p { color: #666; font-size: 12px; font-weight: 500; margin-top: 5px; }
 
         .vLink, .input-field {
             width: 100%;
-            padding: 14px 18px;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 14px;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
             color: white;
-            font-size: 13px;
+            font-size: 14px;
             box-sizing: border-box;
-            margin-bottom: 10px;
-            transition: all 0.3s ease;
+            margin-bottom: 12px;
+            transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .vLink:focus, .input-field:focus {
             outline: none;
             border-color: var(--neon-red);
-            background: rgba(255, 0, 60, 0.05);
+            background: rgba(255, 255, 255, 0.08);
+            transform: scale(1.02);
         }
 
         .timer-config {
             display: grid;
-            grid-template-columns: 2fr 1fr;
-            gap: 10px;
-            margin-top: 5px;
-            margin-bottom: 15px;
+            grid-template-columns: 1.8fr 1.2fr;
+            gap: 12px;
+            margin-bottom: 20px;
         }
 
         .btn-launch {
             width: 100%;
-            padding: 18px;
+            padding: 20px;
             background: var(--accent-gradient);
             border: none;
-            border-radius: 16px;
+            border-radius: 20px;
             color: white;
             font-size: 16px;
-            font-weight: 700;
+            font-weight: 800;
             cursor: pointer;
             transition: 0.3s;
-            box-shadow: 0 10px 20px rgba(255, 0, 60, 0.3);
+            box-shadow: 0 15px 30px rgba(255, 0, 0, 0.25);
             text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
         }
 
-        .btn-launch:active { transform: scale(0.97); }
+        .btn-launch:hover { transform: translateY(-3px); box-shadow: 0 20px 40px rgba(255, 0, 0, 0.35); }
+        .btn-launch:active { transform: scale(0.95); }
 
         #status-bar {
-            margin-top: 20px;
-            padding: 12px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.02);
-            font-size: 12px;
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.2);
+            font-size: 13px;
             text-align: center;
-            color: #777;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            color: #888;
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
         }
 
-        .dot {
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #444;
-            border-radius: 50%;
-            margin-right: 6px;
-        }
-
-        .live { background: #00ff88; box-shadow: 0 0 10px #00ff88; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.3; } 100% { opacity: 1; } }
+        .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; }
+        .live { background: #00ff88; box-shadow: 0 0 15px #00ff88; animation: pulse 1.2s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
     </style>
 </head>
 <body>
 
 <div class="container">
     <div class="header">
-        <h1>STREAM ENGINE <span style="font-size: 10px; opacity: 0.5;">v3.5 PRO</span></h1>
-        <p>Advanced Multi-Link Scheduler</p>
+        <h1>LIVE YOUTUBE</h1>
+        <p>Smart Automation Technology</p>
     </div>
 
-    <div id="links-area">
-        <input type="text" class="vLink" placeholder="Video Link 1 (Primary)">
-        <input type="text" class="vLink" placeholder="Video Link 2 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 3 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 4 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 5 (Optional)">
+    <div id="inputs-wrapper">
+        <input type="text" class="vLink" placeholder="Link 1 (Main Stream Video)">
+        <input type="text" class="vLink" placeholder="Link 2 (Queue Video)">
+        <input type="text" class="vLink" placeholder="Link 3 (Queue Video)">
+        <input type="text" class="vLink" placeholder="Link 4 (Queue Video)">
+        <input type="text" class="vLink" placeholder="Link 5 (Queue Video)">
     </div>
 
     <div class="timer-config">
-        <input type="number" id="durationValue" class="input-field" placeholder="Duration">
+        <input type="number" id="durationValue" class="input-field" placeholder="Time">
         <select id="durationUnit" class="input-field">
             <option value="minutes">Minutes</option>
             <option value="hours">Hours</option>
@@ -147,13 +151,15 @@
         </select>
     </div>
 
-    <input type="password" id="gToken" class="input-field" placeholder="GitHub Classic Token (ghp_...)">
+    <input type="password" id="gToken" class="input-field" placeholder="Enter Security Token">
 
-    <button class="btn-launch" onclick="launchEngine()">🚀 Go Live Now</button>
+    <button class="btn-launch" onclick="launchEngine()">
+        <span>🚀</span> GO LIVE NOW
+    </button>
 
     <div id="status-bar">
         <span id="dot" class="dot"></span>
-        <span id="status-text">Engine Ready</span>
+        <span id="status-text">Ready to Broadcast</span>
     </div>
 </div>
 
@@ -167,34 +173,34 @@
         const dot = document.getElementById('dot');
 
         if (links.length === 0 || !token || !val) {
-            alert("Bhai, boxes khali hain! Links aur Token bhariye."); return;
+            alert("Bhai, saari details dalo!"); return;
         }
 
-        let seconds = parseInt(val);
-        if (unit === "minutes") seconds *= 60;
-        else if (unit === "hours") seconds *= 3600;
-        else if (unit === "days") seconds *= 86400;
+        let secs = parseInt(val);
+        if (unit === "minutes") secs *= 60;
+        else if (unit === "hours") secs *= 3600;
+        else if (unit === "days") secs *= 86400;
 
-        statusText.innerText = "Transmitting to GitHub...";
+        statusText.innerText = "Connecting...";
         dot.classList.add('live');
 
         try {
             const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-                body: JSON.stringify({ ref: 'main', inputs: { video_urls: links.join(','), duration: seconds.toString() } })
+                body: JSON.stringify({ ref: 'main', inputs: { video_urls: links.join(','), duration: secs.toString() } })
             });
 
             if (res.status === 204) {
-                statusText.innerText = "Live Broadcast Started!";
+                statusText.innerText = "System Live!";
                 statusText.style.color = "#00ff88";
             } else {
-                statusText.innerText = "Auth Error: Check Token";
-                statusText.style.color = "#ff003c";
+                statusText.innerText = "Error: Check Connection";
+                statusText.style.color = "#ff0000";
                 dot.classList.remove('live');
             }
         } catch (err) {
-            statusText.innerText = "Connection Failed";
+            statusText.innerText = "Failed to Reach Engine";
             dot.classList.remove('live');
         }
     }
