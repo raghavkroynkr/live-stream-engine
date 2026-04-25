@@ -3,179 +3,92 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stream Engine Pro</title>
+    <title>Ultimate Stream Engine V3</title>
     <style>
-        :root {
-            --primary: #ff0000;
-            --bg: #0f0f0f;
-            --card-bg: #1e1e1e;
-            --text: #ffffff;
-            --input-bg: #2a2a2a;
-        }
-        body { 
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; 
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: var(--bg);
-            color: var(--text);
-        }
-        .app-container {
-            width: 90%;
-            max-width: 400px;
-            background: var(--card-bg);
-            padding: 40px 30px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-            text-align: center;
-            border: 1px solid #333;
-        }
-        .logo-area {
-            margin-bottom: 30px;
-        }
-        .logo-icon {
-            width: 60px;
-            height: 60px;
-            background: var(--primary);
-            border-radius: 18px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 0 auto 15px;
-            font-size: 30px;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.3);
-        }
-        h1 { font-size: 24px; margin: 0; letter-spacing: 1px; }
-        p { color: #aaa; font-size: 14px; margin-top: 5px; }
-        
-        .input-group {
-            margin-bottom: 20px;
-            text-align: left;
-        }
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-size: 13px;
-            color: #888;
-            margin-left: 5px;
-        }
-        input { 
-            width: 100%; 
-            padding: 16px; 
-            background: var(--input-bg);
-            border: 1px solid #333;
-            border-radius: 12px;
-            color: white;
-            font-size: 15px;
-            box-sizing: border-box;
-            transition: 0.3s;
-        }
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: #333;
-        }
-        button { 
-            width: 100%; 
-            padding: 16px; 
-            background: var(--primary); 
-            color: white; 
-            border: none; 
-            border-radius: 12px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            font-size: 16px; 
-            margin-top: 10px;
-            transition: 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-        button:active { transform: scale(0.98); }
-        
-        #status { 
-            margin-top: 25px; 
-            font-size: 14px;
-            padding: 12px;
-            border-radius: 8px;
-            display: none;
-        }
-        .success { background: rgba(0, 255, 0, 0.1); color: #4ade80; display: block !important; }
-        .error { background: rgba(255, 0, 0, 0.1); color: #f87171; display: block !important; }
+        :root { --primary: #ff0000; --bg: #0f0f0f; --card: #1e1e1e; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 10px; }
+        .card { background: var(--card); padding: 20px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        h2 { color: var(--primary); font-size: 20px; margin-bottom: 5px; }
+        p { color: #888; font-size: 11px; margin-bottom: 15px; }
+        .input-box { width: 100%; padding: 12px; margin: 6px 0; border-radius: 10px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 13px; }
+        .timer-row { display: flex; gap: 10px; margin: 10px 0; }
+        .timer-row input { flex: 2; }
+        .timer-row select { flex: 1; }
+        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
+        #status { margin-top: 15px; font-size: 12px; color: #aaa; border-top: 1px solid #333; padding-top: 10px; }
     </style>
 </head>
 <body>
-
-    <div class="app-container">
-        <div class="logo-area">
-            <div class="logo-icon">▶</div>
-            <h1>STREAM ENGINE</h1>
-            <p>Next-Gen Mobile Streamer</p>
+    <div class="card">
+        <h2>LIVE STREAM PRO</h2>
+        <p>1 Se 5 Video Links Dalein (Loop Auto-set Hai)</p>
+        
+        <input type="text" class="vLink" placeholder="Video Link 1 (Direct URL)">
+        <input type="text" class="vLink" placeholder="Video Link 2 (Optional)">
+        <input type="text" class="vLink" placeholder="Video Link 3 (Optional)">
+        <input type="text" class="vLink" placeholder="Video Link 4 (Optional)">
+        <input type="text" class="vLink" placeholder="Video Link 5 (Optional)">
+        
+        <div class="timer-row">
+            <input type="number" id="durationValue" placeholder="Duration" min="1">
+            <select id="durationUnit">
+                <option value="minutes">Minutes</option>
+                <option value="hours">Hours</option>
+                <option value="days">Days</option>
+            </select>
         </div>
 
-        <div class="input-group">
-            <label>YouTube Video Link</label>
-            <input type="text" id="vUrl" placeholder="https://youtube.com/watch?v=...">
-        </div>
-
-        <div class="input-group">
-            <label>GitHub Access Token</label>
-            <input type="password" id="gToken" placeholder="ghp_xxxxxxxxxxxxxxxx">
-        </div>
-
-        <button id="liveBtn" onclick="start()">GO LIVE 🚀</button>
-        <div id="status">Status: Waiting</div>
+        <input type="password" id="gToken" placeholder="GitHub Classic Token (ghp_...)">
+        
+        <button onclick="launchStream()">🚀 Start Live Now</button>
+        <div id="status">Status: Waiting for input...</div>
     </div>
 
     <script>
-        async function start() {
-            const url = document.getElementById('vUrl').value;
-            const token = document.getElementById('gToken').value;
-            const status = document.getElementById('status');
-            const btn = document.getElementById('liveBtn');
+        async function launchStream() {
+            // Khali boxes ko filter karke sirf links nikalna
+            const links = Array.from(document.querySelectorAll('.vLink'))
+                             .map(i => i.value.trim())
+                             .filter(l => l !== "");
             
-            if(!url || !token) { 
-                alert("Please fill both details!"); 
-                return; 
+            const token = document.getElementById('gToken').value;
+            const val = document.getElementById('durationValue').value;
+            const unit = document.getElementById('durationUnit').value;
+            const status = document.getElementById('status');
+
+            if (links.length === 0 || !token || !val) {
+                alert("Kam se kam 1 Link, Token aur Time bhariye!"); return;
             }
 
-            status.className = '';
-            status.innerText = "⏳ Requesting Server...";
-            status.style.display = "block";
-            btn.disabled = true;
-            btn.innerText = "CONNECTING...";
+            let seconds = parseInt(val);
+            if (unit === "minutes") seconds *= 60;
+            else if (unit === "hours") seconds *= 3600;
+            else if (unit === "days") seconds *= 86400;
 
-            // YAHAN AAPKA USERNAME CORRECT KAR DIYA HAI (raghavkroynkr)
-            const repoPath = "raghavkroynkr/live-stream-engine"; 
+            status.innerText = "⏳ Connecting to GitHub Engine...";
             
             try {
-                const res = await fetch(`https://api.github.com/repos/${repoPath}/actions/workflows/stream.yml/dispatches`, {
+                const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
                     method: 'POST',
-                    headers: { 
-                        'Authorization': `Bearer ${token}`, 
-                        'Accept': 'application/vnd.github.v3+json' 
-                    },
-                    body: JSON.stringify({ ref: 'main', inputs: { video_url: url } })
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+                    body: JSON.stringify({ 
+                        ref: 'main', 
+                        inputs: { 
+                            video_urls: links.join(','),
+                            duration: seconds.toString() 
+                        } 
+                    })
                 });
 
-                if (res.status === 204) { 
-                    status.className = 'success';
-                    status.innerText = "✅ SUCCESS! Engine Started."; 
-                    btn.innerText = "STREAMING NOW";
-                } else { 
-                    const errorData = await res.json().catch(() => ({ message: "Check Token or Permissions" }));
-                    status.className = 'error';
-                    status.innerText = "❌ ERROR: " + errorData.message; 
-                    btn.disabled = false;
-                    btn.innerText = "RETRY LIVE";
+                if (res.status === 204) {
+                    status.innerText = "✅ Success! Stream schedule ho gayi hai.";
+                    status.style.color = "#4ade80";
+                } else {
+                    status.innerText = "❌ Error: Token galat hai ya permissions issue hai.";
+                    status.style.color = "#f87171";
                 }
-            } catch (e) {
-                status.className = 'error';
-                status.innerText = "❌ Connection Failed!";
-                btn.disabled = false;
-                btn.innerText = "GO LIVE 🚀";
+            } catch (err) {
+                status.innerText = "❌ Network Error!";
             }
         }
     </script>
