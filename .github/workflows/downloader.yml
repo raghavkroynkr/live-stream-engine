@@ -1,4 +1,4 @@
-name: Video Engine Stealth Pro
+name: Video Engine Ultra Stealth
 on:
   workflow_dispatch:
     inputs:
@@ -12,36 +12,39 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v4  # Marketplace Action
+        uses: actions/checkout@v4
 
       - name: Setup Python
-        uses: actions/setup-python@v5  # Marketplace Action
+        uses: actions/setup-python@v5
         with:
           python-version: '3.10'
 
-      - name: Install Tools
+      - name: Install Latest Patched yt-dlp
         run: |
           python -m pip install --upgrade pip
-          pip install yt-dlp
+          pip install git+https://github.com/yt-dlp/yt-dlp.git # Latest unstable build for best bypass
 
-      - name: Fetch Video Direct Link
+      - name: Fetch Video (All Bypass Methods Enabled)
         id: fetcher
         run: |
-          # Stealth mode bypass using cookies and random user-agent
-          # Note: Hum bina cookies ke ek aur baar try karenge with different extractor
-          RESULT_URL=$(yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" \
+          # 1. Android Spoofing: YouTube ko lagega phone se request hai
+          # 2. VR Client: Sabse kam security isi client par hoti hai
+          # 3. No-Check: Certificate errors hatao
+          
+          RESULT_URL=$(yt-dlp \
+          --user-agent "Mozilla/5.0 (Android 14; Mobile; rv:124.0) Gecko/124.0 Firefox/124.0" \
           --no-check-certificates \
           --geo-bypass \
-          --extractor-args "youtube:player_client=android_vr,web" \
+          --extractor-args "youtube:player_client=android_vr,web_creator;player_skip=configs,js" \
           --quiet --get-url \
           -f "bestvideo[height<=${{ github.event.inputs.quality }}]+bestaudio/best" \
           "${{ github.event.inputs.video_url }}")
           
           echo "FINAL_URL=$RESULT_URL" >> $GITHUB_ENV
 
-      - name: Upload Result
-        uses: actions/upload-artifact@v4 # Marketplace Action
+      - name: Upload Link Artifact
+        uses: actions/upload-artifact@v4
         with:
           name: video-link
           path: |
-             echo ${{ env.FINAL_URL }} > download_here.txt
+             echo ${{ env.FINAL_URL }} > link.txt
