@@ -1,22 +1,33 @@
 name: Stream Link to YouTube Live
+
 on:
   workflow_dispatch:
     inputs:
       video_url:
         description: 'YouTube Video Link'
         required: true
+
 jobs:
   stream:
     runs-on: ubuntu-latest
     steps:
-      - name: Install Tools
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Install Dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y ffmpeg
-          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo wget https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -O /usr/local/bin/yt-dlp
           sudo chmod a+rx /usr/local/bin/yt-dlp
+
       - name: Start Streaming
         run: |
-          yt-dlp -f "best[ext=mp4]" -g "${{ github.event.inputs.video_url }}" | xargs -I {} ffmpeg -re -i "{}" \
-          -c:v libx264 -preset veryfast -b:v 3000k -maxrate 3000k -bufsize 6000k \
-          -pix_fmt yuv420p -g 50 -c:a aac -b:a 128k -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.STREAM_KEY }}"
+          # Video URL fetch kar rahe hain
+          VIDEO_URL=$(yt-dlp -f "best[ext=mp4]/best" -g "${{ github.event.inputs.video_url }}")
+          
+          # FFmpeg streaming command
+          ffmpeg -re -i "$VIDEO_URL" \
+          -c:v libx264 -preset veryfast -b:v 3500k -maxrate 3500k -bufsize 7000k \
+          -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 44100 \
+          -f flv "rtmp://a.rtmp.youtube.com/live2/${{ secrets.STREAM_KEY }}"
