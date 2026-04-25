@@ -4,17 +4,42 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AI TRANSCRIBER</title>
+    <style>
+        body { font-family: 'Inter', sans-serif; background: #0a0a0c; color: white; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .container { width: 100%; max-width: 400px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; padding: 25px; box-sizing: border-box; }
+        .input-field { width: 100%; padding: 14px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; color: white; margin-bottom: 10px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; background: linear-gradient(135deg, #0088ff, #00d4ff); color: white; font-weight: bold; cursor: pointer; text-transform: uppercase; }
+        .back-btn { align-self: flex-start; color: #666; text-decoration: none; margin-bottom: 20px; font-size: 14px; }
+    </style>
 </head>
 <body>
-    <div class="container v-ai">
-        <button onclick="window.location.href='index.html'" style="background:none; border:none; color:#666; margin-bottom:10px;">← Back</button>
-        <div class="header"><h1>AI TRANSCRIBE</h1></div>
-        <input type="text" id="audioUrl" class="input-field" placeholder="Paste Link">
-        <button id="btn-ai" class="btn" onclick="runAI()">🎙️ Send to Email</button>
-        <div id="ai-status" class="status">AI Ready</div>
+    <a href="index.html" class="back-btn">← Home</a>
+    <div class="container">
+        <h1 style="text-align:center; color:#00d4ff;">AI TRANSCRIBER</h1>
+        <input type="text" id="audioUrl" class="input-field" placeholder="Audio/Video Link">
+        <div style="display:flex; gap:10px;">
+            <select id="srcLang" class="input-field"><option value="auto">Auto</option><option value="hi">Hindi</option><option value="en">English</option></select>
+            <select id="task" class="input-field"><option value="transcribe">Original</option><option value="translate">English</option></select>
+        </div>
+        <input type="email" id="targetEmail" class="input-field" placeholder="Result Email ID">
+        <input type="password" id="gToken" class="input-field" placeholder="GitHub Token">
+        <button class="btn" onclick="runAI()">🎙️ Send to Email</button>
+        <div id="status" style="text-align:center; margin-top:15px; font-size:12px; color:#888;">Ready</div>
     </div>
+
     <script>
-        // Wahi runAI() function
+        async function runAI() {
+            const url = document.getElementById('audioUrl').value;
+            const email = document.getElementById('targetEmail').value;
+            const token = document.getElementById('gToken').value;
+            if(!url || !email || !token) { alert("AI details missing!"); return; }
+            document.getElementById('status').innerText = "⏳ AI Engine Processing...";
+            const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/transcribe.yml/dispatches', {
+                method: 'POST', headers: { 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ ref: 'main', inputs: { file_url: url, email: email, language: document.getElementById('srcLang').value, task: document.getElementById('task').value } })
+            });
+            if(res.status === 204) document.getElementById('status').innerText = "✅ Sent! Check Email in 5-10 mins.";
+        }
     </script>
 </body>
 </html>
