@@ -1,4 +1,4 @@
-name: Video Engine Stealth
+name: Video Engine Stealth Pro
 on:
   workflow_dispatch:
     inputs:
@@ -11,15 +11,36 @@ jobs:
   grab:
     runs-on: ubuntu-latest
     steps:
-      - name: Stealth Setup
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Stealth Tools
         run: |
-          python3 -m pip install --upgrade yt-dlp
-          
-      - name: Fetch Video Data
+          python -m pip install --upgrade pip
+          pip install yt-dlp
+
+      - name: Fetch Video Direct Link
+        id: fetcher
         run: |
-          # Bot bypass karne ke liye generic user-agent aur certificates ignore kiye hain
-          yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" \
+          # Asli Chrome browser ka User-Agent use kar rahe hain bypass ke liye
+          RESULT_URL=$(yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/123.0.0.0 Safari/537.36" \
           --no-check-certificates \
-          --prefer-free-formats \
+          --geo-bypass \
+          --quiet --get-url \
           -f "bestvideo[height<=${{ github.event.inputs.quality }}]+bestaudio/best" \
-          --get-url "${{ github.event.inputs.video_url }}"
+          "${{ github.event.inputs.video_url }}")
+          
+          echo "FINAL_URL=$RESULT_URL" >> $GITHUB_ENV
+
+      - name: Create Artifact Link
+        uses: actions/upload-artifact@v4
+        with:
+          name: download-link
+          path: |
+            # Hum ek text file mein direct link save kar rahe hain
+            echo ${{ env.FINAL_URL }} > link.txt
