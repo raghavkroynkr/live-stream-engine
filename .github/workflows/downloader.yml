@@ -1,0 +1,54 @@
+name: Universal Video Downloader
+
+on:
+  workflow_dispatch:
+    inputs:
+      video_url:
+        required: true
+      email:
+        required: true
+      format:
+        default: 'best'
+
+jobs:
+  download:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install yt-dlp
+        run: |
+          sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
+          sudo chmod a+rx /usr/local/bin/yt-dlp
+
+      - name: Download Video
+        run: |
+          if [ "${{ github.event.inputs.format }}" = "mp3" ]; then
+            yt-dlp -x --audio-format mp3 -o "downloaded_file.%(ext)s" "${{ github.event.inputs.video_url }}"
+          else
+            yt-dlp -f "best" -o "downloaded_file.%(ext)s" "${{ github.event.inputs.video_url }}"
+          fi
+
+      - name: Send via Email
+        shell: python
+        env:
+          MAIL_USER: ${{ secrets.EMAIL_USER }}
+          MAIL_PASS: ${{ secrets.EMAIL_PASS }}
+          TARGET_EMAIL: ${{ github.event.inputs.email }}
+        run: |
+          import smtplib, os
+          from email.message import EmailMessage
+          
+          files = [f for f in os.listdir('.') if f.startswith('downloaded_file')]
+          if not files: exit(1)
+          
+          msg = EmailMessage()
+          msg["Subject"] = "Aapka Video Download Taiyar Hai!"
+          msg["From"] = os.environ["MAIL_USER"]
+          msg["To"] = os.environ["TARGET_EMAIL"]
+          msg.set_content("Namaste! Aapka requested video niche attachment mein hai.")
+          
+          with open(files[0], 'rb') as f:
+              msg.add_attachment(f.read(), maintype='application', subtype='octet-stream', filename=files[0])
+          
+          with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+              smtp.login(os.environ["MAIL_USER"], os.environ["MAIL_PASS"])
+              smtp.send_message(msg)
