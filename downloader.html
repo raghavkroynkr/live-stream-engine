@@ -3,65 +3,87 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>X-DOWNLOADER PRO</title>
+    <title>DOWNLOADER</title>
     <style>
-        :root { --accent: #ffcc00; --dark: #080808; }
-        body { font-family: 'Inter', sans-serif; background: var(--dark); color: white; display: flex; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .downloader-card { width: 100%; max-width: 400px; background: rgba(255,255,255,0.03); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.08); border-radius: 35px; padding: 35px; box-shadow: 0 40px 100px rgba(0,0,0,0.8); text-align: center; }
-        h1 { font-size: 24px; font-weight: 900; color: var(--accent); margin-bottom: 30px; text-transform: uppercase; }
-        .input-box { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; color: white; margin-bottom: 15px; box-sizing: border-box; font-size: 14px; }
-        .main-btn { width: 100%; padding: 20px; border: none; border-radius: 20px; background: var(--accent); color: black; font-weight: 800; cursor: pointer; text-transform: uppercase; transition: 0.4s; }
-        #dlSection { display: none; margin-top: 25px; padding: 20px; border-radius: 20px; background: rgba(0, 255, 136, 0.1); border: 1px solid #00ff88; }
-        .dl-link { display: block; background: #00ff88; color: #000; padding: 15px; border-radius: 15px; text-decoration: none; font-weight: bold; margin-top: 10px; }
+        /* Aapka Original Style */
+        :root { --gold: #ffcc00; --dark: #0a0a0c; --glass: rgba(255, 255, 255, 0.05); }
+        body { font-family: 'Inter', sans-serif; background: var(--dark); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
+        
+        /* Back Button Jo Aapko Chahiye Tha */
+        .back-link { align-self: flex-start; color: #555; text-decoration: none; font-size: 14px; margin-bottom: 20px; }
+        
+        .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 30px; box-sizing: border-box; }
+        .header h1 { font-size: 28px; font-weight: 900; text-align: center; color: var(--gold); margin: 0; text-transform: uppercase; }
+        .input-field { width: 100%; padding: 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-top: 15px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: #000; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #ffcc00, #ff8800); margin-top: 20px; }
+        
+        /* Naya Download Area Jo Button Dabane Par Dikhega */
+        #downloadResult { display: none; margin-top: 20px; padding: 15px; background: rgba(0, 255, 136, 0.1); border: 1px dashed #00ff88; border-radius: 12px; text-align: center; }
+        .dl-now { color: #00ff88; text-decoration: none; font-weight: bold; font-size: 14px; display: block; margin-top: 5px; }
     </style>
 </head>
 <body>
-    <div class="downloader-card">
-        <h1>X-DOWNLOADER</h1>
-        <input type="text" id="vUrl" class="input-box" placeholder="Video Link Paste Karein">
-        <select id="pax" class="input-box">
+
+    <a href="index.html" class="back-link">← DASHBOARD</a>
+
+    <div class="container">
+        <div class="header"><h1>DOWNLOADER</h1></div>
+        
+        <input type="text" id="vidUrl" class="input-field" placeholder="Paste Video Link">
+        
+        <select id="quality" class="input-field">
             <option value="2160">4K Ultra HD (2160p)</option>
             <option value="1080" selected>Full HD (1080p)</option>
             <option value="720">HD (720p)</option>
+            <option value="480">SD (480p)</option>
+            <option value="mp3">Audio (MP3)</option>
         </select>
-        <input type="password" id="tok" class="input-box" placeholder="GitHub Token (ghp_...)">
-        <button class="main-btn" onclick="generate()">⚡ Start Generation</button>
         
-        <div id="status" style="margin-top:15px; font-size:12px; color:#888;"></div>
+        <input type="password" id="gToken" class="input-field" placeholder="GitHub Token (ghp_...)">
+        
+        <button class="btn" onclick="processDownload()">⚡ DOWNLOAD NOW</button>
+        
+        <div id="status" style="margin-top:15px; text-align:center; font-size:12px; color:#666;">System Ready</div>
 
-        <div id="dlSection">
-            <span style="color:#00ff88; font-weight:bold;">✅ Link Ready!</span>
-            <a id="finalBtn" href="#" class="dl-link" target="_blank">⬇️ DOWNLOAD NOW</a>
+        <div id="downloadResult">
+            <span style="font-size:12px; color:#aaa;">Video link ready:</span>
+            <a id="finalLink" href="#" class="dl-now" target="_blank">⬇️ CLICK TO DOWNLOAD</a>
         </div>
     </div>
 
     <script>
-        async function generate() {
-            const url = document.getElementById('vUrl').value.trim();
-            const token = document.getElementById('tok').value.trim();
+        async function processDownload() {
+            const url = document.getElementById('vidUrl').value.trim();
+            const token = document.getElementById('gToken').value.trim();
+            const res = document.getElementById('quality').value;
             const status = document.getElementById('status');
-            
-            if(!url || !token) { alert("Bhai, details bharna bhool gaye!"); return; }
+            const dlBox = document.getElementById('downloadResult');
 
-            status.innerText = "⏳ Bypassing YouTube Bots... wait 5 sec";
-            
-            // Trigger GitHub Engine
-            const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/downloader.yml/dispatches', {
+            // Smart Missing Check
+            if(!url) { alert("⚠️ Bhai, Video Link missing hai!"); document.getElementById('vidUrl').focus(); return; }
+            if(!token) { alert("⚠️ Bhai, GitHub Token daalna zaroori hai!"); document.getElementById('gToken').focus(); return; }
+
+            status.innerText = "⏳ Cloud processing start ho raha hai...";
+            dlBox.style.display = "none";
+
+            // Trigger GitHub Action
+            const gh = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/downloader.yml/dispatches', {
                 method: 'POST',
                 headers: { 'Authorization': `Bearer ${token}` },
-                body: JSON.stringify({ ref: 'main', inputs: { video_url: url, quality: document.getElementById('pax').value } })
+                body: JSON.stringify({ ref: 'main', inputs: { video_url: url, quality: res } })
             });
 
-            if(res.status === 204) {
-                // Yahan hum direct link proxy ka use kar rahe hain bypass ke liye
+            if(gh.status === 204) {
+                status.innerText = "🚀 Request Sent! Link niche generate ho rahi hai...";
+                
+                // Instant Result Bypass (Bina Action Tab pe gaye)
                 setTimeout(() => {
-                    status.innerText = "🚀 Direct Link Generated!";
-                    document.getElementById('dlSection').style.display = "block";
-                    // Instant link fallback
-                    document.getElementById('finalBtn').href = `https://loader.to/api/button/?url=${url}&f=${document.getElementById('pax').value}`;
-                }, 4000);
+                    status.innerText = "✅ Link Generated!";
+                    document.getElementById('finalLink').href = `https://loader.to/api/button/?url=${url}&f=${res}`;
+                    dlBox.style.display = "block";
+                }, 3000);
             } else {
-                status.innerText = "❌ Token Error! Please check.";
+                status.innerText = "❌ Error: Token check karein!";
             }
         }
     </script>
