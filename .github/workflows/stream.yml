@@ -24,16 +24,15 @@ jobs:
         env:
           YOUTUBE_STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
-          # Video ka direct link fetch karna (with error handling)
-          VIDEO_URL=$(yt-dlp -f "best" -g "${{ github.event.inputs.video_url }}")
+          # Sabse pehle user-agent badal kar link nikalne ki koshish
+          VIDEO_URL=$(yt-dlp --user-agent "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" -f "best" -g "${{ github.event.inputs.video_url }}")
           
           if [ -z "$VIDEO_URL" ]; then
-            echo "Error: Video link fetch nahi ho saka!"
+            echo "Error: YouTube block kar raha hai. Ek baar normal video link try karein."
             exit 1
           fi
 
-          # YouTube par stream bhejna (Simplified for better compatibility)
+          # FFmpeg Streaming
           ffmpeg -re -i "$VIDEO_URL" \
-          -vcodec libx264 -preset superfast -maxrate 3000k -bufsize 6000k \
-          -pix_fmt yuv420p -g 60 -acodec aac -b:a 128k -ar 44100 \
-          -f flv "rtmp://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY"
+          -vcodec libx264 -preset superfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
+          -pix_fmt yuv420p -g 60 -acodec aac -b:a 128k -f flv "rtmp://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY"
