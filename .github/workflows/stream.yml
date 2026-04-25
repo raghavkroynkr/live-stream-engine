@@ -9,6 +9,9 @@ on:
       duration:
         description: 'Duration in seconds'
         required: true
+      stream_key:
+        description: 'Dynamic Stream Key from App'
+        required: true
 
 jobs:
   stream:
@@ -23,24 +26,17 @@ jobs:
           sudo apt-get install -y ffmpeg
 
       - name: Run Engine
-        env:
-          KEY: ${{ secrets.STREAM_KEY }}
         run: |
-          # Links ko array mein todna
-          IFS=',' read -ra ADDR <<< "${{ github.event.inputs.video_urls }}"
-          
           # Playlist taiyar karna
+          IFS=',' read -ra ADDR <<< "${{ github.event.inputs.video_urls }}"
           touch playlist.txt
           for i in "${ADDR[@]}"; do
             echo "file '$i'" >> playlist.txt
           done
 
-          echo "Engine Ready! ${#ADDR[@]} video(s) mili hain."
-          echo "Timer: ${{ github.event.inputs.duration }} seconds."
-
-          # timeout timer control karega, stream_loop playlist ko repeat karega
+          # FFmpeg ab seedha application se aayi hui key use karega
           timeout ${{ github.event.inputs.duration }}s ffmpeg -re -f concat -safe 0 \
           -protocol_whitelist file,http,https,tcp,tls -stream_loop -1 -i playlist.txt \
           -vcodec libx264 -preset superfast -b:v 3000k -maxrate 3000k -bufsize 6000k \
           -pix_fmt yuv420p -g 60 -acodec aac -b:a 128k -ar 44100 \
-          -f flv "rtmp://a.rtmp.youtube.com/live2/$KEY" || echo "Timer Stop Ho Gaya."
+          -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.inputs.stream_key }}" || echo "Stream Stopped."
