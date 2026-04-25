@@ -20,21 +20,20 @@ jobs:
           sudo apt-get install -y ffmpeg
           python3 -m pip install --upgrade yt-dlp
 
-      - name: Run Streaming Engine
+      - name: Start Streaming Engine
         env:
           YOUTUBE_STREAM_KEY: ${{ secrets.STREAM_KEY }}
         run: |
-          # Video ka direct link fetch kar rahe hain
+          # Video ka direct link fetch karna (with error handling)
           VIDEO_URL=$(yt-dlp -f "best" -g "${{ github.event.inputs.video_url }}")
           
-          # Agar link nahi mila toh error dikhaye
           if [ -z "$VIDEO_URL" ]; then
-            echo "Error: Could not fetch video URL"
+            echo "Error: Video link fetch nahi ho saka!"
             exit 1
           fi
 
-          # YouTube Server par stream bhej rahe hain
+          # YouTube par stream bhejna (Simplified for better compatibility)
           ffmpeg -re -i "$VIDEO_URL" \
-          -c:v libx264 -preset superfast -b:v 2500k -maxrate 2500k -bufsize 5000k \
-          -pix_fmt yuv420p -g 60 -c:a aac -b:a 128k -ar 44100 \
+          -vcodec libx264 -preset superfast -maxrate 3000k -bufsize 6000k \
+          -pix_fmt yuv420p -g 60 -acodec aac -b:a 128k -ar 44100 \
           -f flv "rtmp://a.rtmp.youtube.com/live2/$YOUTUBE_STREAM_KEY"
