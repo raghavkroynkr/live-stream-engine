@@ -3,94 +3,219 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate Stream Engine V3</title>
+    <title>Stream Engine Pro</title>
     <style>
-        :root { --primary: #ff0000; --bg: #0f0f0f; --card: #1e1e1e; }
-        body { font-family: 'Segoe UI', sans-serif; background: var(--bg); color: white; display: flex; justify-content: center; padding: 10px; }
-        .card { background: var(--card); padding: 20px; border-radius: 20px; width: 100%; max-width: 450px; border: 1px solid #333; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        h2 { color: var(--primary); font-size: 20px; margin-bottom: 5px; }
-        p { color: #888; font-size: 11px; margin-bottom: 15px; }
-        .input-box { width: 100%; padding: 12px; margin: 6px 0; border-radius: 10px; border: 1px solid #444; background: #2a2a2a; color: white; box-sizing: border-box; font-size: 13px; }
-        .timer-row { display: flex; gap: 10px; margin: 10px 0; }
-        .timer-row input { flex: 2; }
-        .timer-row select { flex: 1; }
-        button { width: 100%; padding: 15px; background: var(--primary); color: white; border: none; border-radius: 12px; font-weight: bold; cursor: pointer; margin-top: 10px; text-transform: uppercase; }
-        #status { margin-top: 15px; font-size: 12px; color: #aaa; border-top: 1px solid #333; padding-top: 10px; }
+        :root {
+            --neon-red: #ff003c;
+            --dark-bg: #0a0a0c;
+            --glass: rgba(255, 255, 255, 0.05);
+            --accent-gradient: linear-gradient(135deg, #ff003c 0%, #ff4d00 100%);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--dark-bg);
+            background-image: radial-gradient(circle at 50% -20%, #3d0000 0%, var(--dark-bg) 80%);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 420px;
+            background: var(--glass);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 32px;
+            padding: 30px;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.5);
+        }
+
+        .header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin: 0;
+            background: var(--accent-gradient);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        .header p {
+            color: #888;
+            font-size: 14px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            position: relative;
+            margin-bottom: 15px;
+        }
+
+        .vLink, .input-field {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            color: white;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        .vLink:focus, .input-field:focus {
+            outline: none;
+            border-color: var(--neon-red);
+            background: rgba(255, 0, 60, 0.05);
+            box-shadow: 0 0 20px rgba(255, 0, 60, 0.1);
+        }
+
+        .timer-config {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        select.input-field {
+            cursor: pointer;
+            appearance: none;
+        }
+
+        .btn-launch {
+            width: 100%;
+            padding: 18px;
+            background: var(--accent-gradient);
+            border: none;
+            border-radius: 18px;
+            color: white;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 20px rgba(255, 0, 60, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-launch:active {
+            transform: scale(0.95);
+        }
+
+        #status-bar {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 13px;
+            text-align: center;
+            color: #aaa;
+            border: 1px dashed rgba(255, 255, 255, 0.1);
+        }
+
+        .status-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #555;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+
+        .active-dot {
+            background: #00ff88;
+            box-shadow: 0 0 10px #00ff88;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
 <body>
-    <div class="card">
-        <h2>LIVE STREAM PRO</h2>
-        <p>1 Se 5 Video Links Dalein (Loop Auto-set Hai)</p>
-        
-        <input type="text" class="vLink" placeholder="Video Link 1 (Direct URL)">
-        <input type="text" class="vLink" placeholder="Video Link 2 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 3 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 4 (Optional)">
-        <input type="text" class="vLink" placeholder="Video Link 5 (Optional)">
-        
-        <div class="timer-row">
-            <input type="number" id="durationValue" placeholder="Duration" min="1">
-            <select id="durationUnit">
-                <option value="minutes">Minutes</option>
-                <option value="hours">Hours</option>
-                <option value="days">Days</option>
-            </select>
-        </div>
 
-        <input type="password" id="gToken" placeholder="GitHub Classic Token (ghp_...)">
-        
-        <button onclick="launchStream()">🚀 Start Live Now</button>
-        <div id="status">Status: Waiting for input...</div>
+<div class="container">
+    <div class="header">
+        <h1>STREAM ENGINE <span style="font-size: 12px; color: #555;">v3.5</span></h1>
+        <p>Aadhunik Streaming Technology</p>
     </div>
 
-    <script>
-        async function launchStream() {
-            // Khali boxes ko filter karke sirf links nikalna
-            const links = Array.from(document.querySelectorAll('.vLink'))
-                             .map(i => i.value.trim())
-                             .filter(l => l !== "");
-            
-            const token = document.getElementById('gToken').value;
-            const val = document.getElementById('durationValue').value;
-            const unit = document.getElementById('durationUnit').value;
-            const status = document.getElementById('status');
+    <div id="links-container">
+        <input type="text" class="vLink" placeholder="Video Link 1 (Primary Link)">
+        <input type="text" class="vLink" placeholder="Video Link 2 (Optional)">
+        <input type="text" class="vLink" placeholder="Video Link 3 (Optional)">
+    </div>
 
-            if (links.length === 0 || !token || !val) {
-                alert("Kam se kam 1 Link, Token aur Time bhariye!"); return;
-            }
+    <div class="timer-config">
+        <input type="number" id="durationValue" class="input-field" placeholder="Duration">
+        <select id="durationUnit" class="input-field">
+            <option value="minutes">Min</option>
+            <option value="hours">Hrs</option>
+            <option value="days">Days</option>
+        </select>
+    </div>
 
-            let seconds = parseInt(val);
-            if (unit === "minutes") seconds *= 60;
-            else if (unit === "hours") seconds *= 3600;
-            else if (unit === "days") seconds *= 86400;
+    <input type="password" id="gToken" class="input-field" placeholder="GitHub Secret Token (ghp_...)" style="margin-bottom: 20px;">
 
-            status.innerText = "⏳ Connecting to GitHub Engine...";
-            
-            try {
-                const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
-                    method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
-                    body: JSON.stringify({ 
-                        ref: 'main', 
-                        inputs: { 
-                            video_urls: links.join(','),
-                            duration: seconds.toString() 
-                        } 
-                    })
-                });
+    <button class="btn-launch" onclick="launchEngine()">🚀 Go Live Now</button>
 
-                if (res.status === 204) {
-                    status.innerText = "✅ Success! Stream schedule ho gayi hai.";
-                    status.style.color = "#4ade80";
-                } else {
-                    status.innerText = "❌ Error: Token galat hai ya permissions issue hai.";
-                    status.style.color = "#f87171";
-                }
-            } catch (err) {
-                status.innerText = "❌ Network Error!";
-            }
+    <div id="status-bar">
+        <span id="dot" class="status-dot"></span>
+        <span id="status-text">System Ready</span>
+    </div>
+</div>
+
+<script>
+    async function launchEngine() {
+        const links = Array.from(document.querySelectorAll('.vLink')).map(i => i.value.trim()).filter(l => l !== "");
+        const token = document.getElementById('gToken').value;
+        const val = document.getElementById('durationValue').value;
+        const unit = document.getElementById('durationUnit').value;
+        const statusText = document.getElementById('status-text');
+        const dot = document.getElementById('dot');
+
+        if (links.length === 0 || !token || !val) {
+            alert("Bhai, kam se kam ek link, time aur token toh dalo!"); return;
         }
-    </script>
+
+        let seconds = parseInt(val);
+        if (unit === "minutes") seconds *= 60;
+        else if (unit === "hours") seconds *= 3600;
+        else if (unit === "days") seconds *= 86400;
+
+        statusText.innerText = "Transmitting Signal...";
+        dot.classList.add('active-dot');
+
+        try {
+            const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github.v3+json' },
+                body: JSON.stringify({ ref: 'main', inputs: { video_urls: links.join(','), duration: seconds.toString() } })
+            });
+
+            if (res.status === 204) {
+                statusText.innerText = "Live Stream Active!";
+                statusText.style.color = "#00ff88";
+            } else {
+                statusText.innerText = "Auth Error: Check Token";
+                statusText.style.color = "#ff003c";
+                dot.classList.remove('active-dot');
+            }
+        } catch (err) {
+            statusText.innerText = "Connection Failed";
+            dot.classList.remove('active-dot');
+        }
+    }
+</script>
+
 </body>
 </html>
