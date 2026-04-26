@@ -15,7 +15,6 @@
         body { 
             font-family: 'Inter', sans-serif; 
             background: var(--dark-bg); 
-            background-image: radial-gradient(circle at 50% 0%, #3a0000 0%, #0d0d0f 70%); 
             color: #fff; 
             display: flex; 
             flex-direction: column; 
@@ -23,138 +22,138 @@
             min-height: 100vh; 
             margin: 0; 
             padding: 20px; 
+            overflow-x: hidden;
         }
 
+        /* --- WATERCOLOR ANIMATION BACKGROUND --- */
+        .watercolor-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #1a0000, #0d0d0f, #00001a, #0d0d0f);
+            background-size: 400% 400%;
+            animation: waterFlow 15s ease infinite;
+        }
+        @keyframes waterFlow {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        /* Adjusted Header & Container */
         .container { 
-            width: 100%; 
-            max-width: 420px; 
+            width: 100%; max-width: 420px; 
             background: var(--card-bg); 
-            backdrop-filter: blur(20px); 
+            backdrop-filter: blur(25px); 
             border: 1px solid var(--border); 
-            border-radius: 35px; 
-            padding: 30px; 
+            border-radius: 35px; padding: 25px; 
             box-shadow: 0 0 40px rgba(255, 0, 0, 0.15); 
             box-sizing: border-box; 
+            margin-top: 10px;
         }
 
         .header h1 { 
-            font-size: 26px; 
-            text-align: center; 
-            letter-spacing: 2px; 
-            text-transform: uppercase; 
-            background: linear-gradient(to right, #ff0000, #ff6666); 
-            -webkit-background-clip: text; 
-            -webkit-text-fill-color: transparent; 
-            margin-bottom: 5px;
+            font-size: 28px; text-align: center; letter-spacing: 3px; 
+            text-transform: uppercase; background: linear-gradient(to right, #ff0000, #ff6666); 
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
+            margin: 0 0 5px 0; font-weight: 900;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
         }
 
-        .input-box { margin-bottom: 18px; position: relative; }
-        
-        /* Clear Labels for every box */
+        .sub-text { text-align: center; font-size: 10px; color: #555; margin-bottom: 20px; letter-spacing: 1px; }
+
         .label-text { 
-            font-size: 11px; 
-            font-weight: 700; 
-            color: #ff3333; 
-            text-transform: uppercase; 
-            margin-bottom: 6px; 
-            display: block; 
-            letter-spacing: 1px;
-            margin-left: 10px;
+            font-size: 11px; font-weight: 700; color: #ff3333; 
+            text-transform: uppercase; margin-bottom: 6px; 
+            display: block; letter-spacing: 1px; margin-left: 10px;
         }
 
-        .input-field { 
-            width: 100%; 
-            padding: 15px; 
+        .input-field, .select-field { 
+            width: 100%; padding: 14px; 
             background: rgba(0, 0, 0, 0.5); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            border-radius: 15px; 
-            color: white; 
-            box-sizing: border-box; 
-            transition: 0.3s;
-            font-size: 14px;
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 15px; color: white; 
+            box-sizing: border-box; transition: 0.3s; font-size: 14px;
         }
 
-        .input-field:focus { 
-            border-color: var(--neon-red); 
-            outline: none; 
-            box-shadow: 0 0 10px rgba(255, 0, 0, 0.3); 
+        select.select-field {
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            background-size: 14px;
         }
 
-        /* 5 Unique Video Boxes */
-        .v-box { border-left: 3px solid var(--neon-red); margin-bottom: 10px; }
+        .input-field:focus { border-color: var(--neon-red); outline: none; box-shadow: 0 0 12px rgba(255, 0, 0, 0.2); }
 
+        .v-box { border-left: 3px solid var(--neon-red); margin-bottom: 10px; border-radius: 2px; }
+
+        /* Main Launch Button */
         .btn-start { 
-            width: 100%; 
-            padding: 20px; 
-            border: none; 
-            border-radius: 18px; 
-            color: white; 
-            font-weight: 900; 
-            cursor: pointer; 
-            text-transform: uppercase; 
-            background: linear-gradient(135deg, #ff0000, #990000); 
-            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.3); 
-            transition: 0.4s ease; 
-            margin-top: 15px;
-            letter-spacing: 1px;
+            width: 100%; padding: 18px; border: none; border-radius: 20px; 
+            color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; 
+            background: linear-gradient(135deg, #ff0000, #800000); 
+            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4); 
+            transition: 0.3s ease; margin-top: 15px; letter-spacing: 1px;
         }
 
-        .btn-start:hover { transform: translateY(-3px); box-shadow: 0 12px 30px rgba(255, 0, 0, 0.5); }
+        .btn-start:active { transform: scale(0.97); }
 
-        /* Stylish Info Button */
+        /* Missing Info/Guide Button */
         .info-btn {
-            margin-top: 25px;
-            padding: 10px 20px;
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 50px;
-            font-size: 12px;
-            color: #888;
-            cursor: pointer;
-            transition: 0.3s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            margin-top: 20px; padding: 12px 25px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 50px; font-size: 12px; color: #777;
+            text-decoration: none; transition: 0.3s;
         }
+        .info-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 
-        .info-btn:hover { background: rgba(255, 255, 255, 0.1); color: #fff; }
-
-        .status-msg { margin-top: 15px; text-align: center; font-size: 13px; color: #666; font-style: italic; }
+        .status-msg { margin-top: 15px; text-align: center; font-size: 12px; font-weight: 700; }
     </style>
 </head>
 <body>
 
+    <div class="watercolor-bg"></div>
+
     <div class="container">
-        <div class="header"><h1>STREAM ENGINE PRO</h1></div>
-        <p style="text-align:center; font-size:10px; color:#555; margin-bottom:25px;">Non-Stop 24/7 Looper Active</p>
+        <div class="header"><h1>STREAM ENGINE</h1></div>
+        <div class="sub-text">Non-Stop 24/7 Looper Active</div>
         
         <div class="v-box"><span class="label-text">🎥 Video Link 01 (Main)</span><input type="text" class="vLink input-field" placeholder="Paste URL Here..."></div>
-        <div class="v-box"><span class="label-text">🎥 Video Link 02</span><input type="text" class="vLink input-field" placeholder="Optional URL..."></div>
-        <div class="v-box"><span class="label-text">🎥 Video Link 03</span><input type="text" class="vLink input-field" placeholder="Optional URL..."></div>
-        <div class="v-box"><span class="label-text">🎥 Video Link 04</span><input type="text" class="vLink input-field" placeholder="Optional URL..."></div>
-        <div class="v-box"><span class="label-text">🎥 Video Link 05</span><input type="text" class="vLink input-field" placeholder="Optional URL..."></div>
+        <div class="v-box"><span class="label-text">🎥 Video Link 02</span><input type="text" class="vLink input-field" placeholder="URL 2..."></div>
+        <div class="v-box"><span class="label-text">🎥 Video Link 03</span><input type="text" class="vLink input-field" placeholder="URL 3..."></div>
+        <div class="v-box"><span class="label-text">🎥 Video Link 04</span><input type="text" class="vLink input-field" placeholder="URL 4..."></div>
+        <div class="v-box"><span class="label-text">🎥 Video Link 05</span><input type="text" class="vLink input-field" placeholder="URL 5..."></div>
 
-        <hr style="opacity:0.05; margin:20px 0;">
+        <div style="margin: 20px 0; border-top: 1px solid rgba(255,255,255,0.05);"></div>
 
         <div class="input-box">
             <span class="label-text">🔑 YouTube Stream Key</span>
-            <input type="password" id="sKey" class="input-field" placeholder="Paste your stream key here">
+            <input type="password" id="sKey" class="input-field" placeholder="Enter Stream Key...">
         </div>
 
-        <div style="display:flex; gap:12px;">
-            <div class="input-box" style="flex:1;">
-                <span class="label-text">⏱️ Timer (Sec)</span>
-                <input type="number" id="durVal" class="input-field" value="3600">
+        <div style="display:flex; gap:12px; margin-bottom: 18px;">
+            <div style="flex:1;">
+                <span class="label-text">⏱️ Unit</span>
+                <select id="timeUnit" class="select-field">
+                    <option value="days">Days</option>
+                    <option value="hours">Hours</option>
+                </select>
             </div>
-            <div class="input-box" style="flex:2;">
-                <span class="label-text">🛡️ GitHub Auth Password (Token)</span>
-                <input type="password" id="gToken" class="input-field" placeholder="Paste Token">
+            <div style="flex:1;">
+                <span class="label-text">🔢 Value</span>
+                <input type="number" id="timeVal" class="input-field" value="1">
             </div>
+        </div>
+
+        <div class="input-box">
+            <span class="label-text">🛡️ GitHub Auth (Token)</span>
+            <input type="password" id="gToken" class="input-field" placeholder="Paste Token...">
         </div>
 
         <button class="btn-start" onclick="runEngine()">🚀 Launch Live Stream</button>
-        <div id="status" class="status-msg">System: Standby Mode</div>
+        <div id="status" class="status-msg" style="color: #444;">System: Standby Mode</div>
     </div>
 
     <a href="guide.html" class="info-btn">
@@ -166,44 +165,38 @@
             const status = document.getElementById('status');
             const token = document.getElementById('gToken').value;
             const sKey = document.getElementById('sKey').value;
-            const duration = document.getElementById('durVal').value;
+            const unit = document.getElementById('timeUnit').value;
+            const val = parseFloat(document.getElementById('timeVal').value) || 0;
             
+            let finalSeconds = unit === 'days' ? val * 86400 : val * 3600;
+
             const linkInputs = document.querySelectorAll('.vLink');
             let linksArray = [];
-            linkInputs.forEach(input => {
-                if(input.value.trim() !== "") linksArray.push(input.value.trim());
-            });
+            linkInputs.forEach(input => { if(input.value.trim() !== "") linksArray.push(input.value.trim()); });
 
-            if(linksArray.length === 0 || !sKey || !token) {
-                alert("Bhai, Details dalo pehle!");
+            if(linksArray.length === 0 || !sKey || !token || val <= 0) {
+                alert("Details sahi se bhariye bhai!");
                 return;
             }
 
-            status.innerHTML = "📡 Sending signals to GitHub...";
+            status.innerHTML = "📡 Processing Request...";
             status.style.color = "#ffaa00";
 
             try {
                 const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
                     method: 'POST',
-                    headers: { 
-                        'Authorization': `Bearer ${token}`,
-                        'Accept': 'application/vnd.github+json'
-                    },
-                    body: JSON.stringify({ 
-                        ref: 'main', 
-                        inputs: { video_urls: linksArray.join(','), stream_key: sKey, duration: duration } 
-                    })
+                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' },
+                    body: JSON.stringify({ ref: 'main', inputs: { video_urls: linksArray.join(','), stream_key: sKey, duration: finalSeconds.toString() } })
                 });
-
                 if(res.status === 204) {
-                    status.innerHTML = "✨ Engine Fired! Stream is LIVE.";
+                    status.innerHTML = "✅ Stream Triggered Successfully!";
                     status.style.color = "#00ffcc";
                 } else {
-                    status.innerHTML = "❌ Auth Failed: Check Token.";
+                    status.innerHTML = "❌ Error: Check Token/Auth.";
                     status.style.color = "#ff4444";
                 }
             } catch (err) {
-                status.innerHTML = "❌ System Offline!";
+                status.innerHTML = "❌ System Error!";
                 status.style.color = "#ff4444";
             }
         }
