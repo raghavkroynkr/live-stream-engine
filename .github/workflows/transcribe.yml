@@ -5,42 +5,45 @@ on:
     inputs:
       file_url:
         required: true
+        description: 'Media URL (Direct Link)'
       email:
         required: true
+        description: 'Result kahan bhejna hai?'
       language:
-        default: 'auto'
+        default: 'Hindi'
+        description: 'Bhasha chunein (e.g. Hindi, English, auto)'
       task:
         default: 'transcribe'
+        description: 'Transcribe ya Translate?'
 
 jobs:
   ai-process:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Install AI Software
+      - name: Install AI & Media Tools
         run: |
           pip install openai-whisper setuptools-rust
           sudo apt-get update && sudo apt-get install -y ffmpeg
 
       - name: Run Whisper AI
+        id: whisper_engine
         run: |
           mkdir -p output
-          # Media download logic
+          # 1. Media download (Extension fix ke saath)
           curl -L "${{ github.event.inputs.file_url }}" -o input_media
           
-          # Force Whisper to run and wait for it
-          if [ "${{ github.event.inputs.language }}" = "auto" ]; then
-            python3 -m whisper input_media --model base --task ${{ github.event.inputs.task }} --output_dir output
-          else
-            python3 -m whisper input_media --model base --language ${{ github.event.inputs.language }} --task ${{ github.event.inputs.task }} --output_dir output
-          fi
+          # 2. Transcription Start (Progress logs dashboard par dikhenge)
+          echo "⌛ AI Transcription shuru ho rahi hai... Isme thoda samay lag sakta hai."
+          python3 -m whisper input_media --model base --output_dir output --language ${{ github.event.inputs.language }} --task ${{ github.event.inputs.task }}
 
-      - name: Send Email Result
+      - name: Finalize Dashboard & Persistence
         env:
-          MAIL_USER: ${{ secrets.MAIL_USER }}
-          MAIL_PASS: ${{ secrets.MAIL_PASS }}
+          # Aapke screenshot ke exact secret names
+          USER_MAIL: ${{ secrets.EMAIL_USER }}
+          PASS_MAIL: ${{ secrets.EMAIL_PASS }}
           TARGET_EMAIL: ${{ github.event.inputs.email }}
         run: |
           python3 <<EOF
@@ -49,36 +52,58 @@ jobs:
           from email.mime.multipart import MIMEMultipart
           from email.utils import formataddr
 
-          def clean(text):
-              return re.sub(r'[^\x20-\x7E]', '', text).strip() if text else ""
+          # Invisible character aur space remover logic
+          def clean_secret(text):
+              if not text: return ""
+              return text.replace('\xa0', '').replace(' ', '').strip()
 
-          user = clean(os.environ.get("MAIL_USER"))
-          password = clean(os.environ.get("MAIL_PASS"))
+          user = clean_secret(os.environ.get("USER_MAIL"))
+          password = clean_secret(os.environ.get("PASS_MAIL"))
           target = os.environ.get("TARGET_EMAIL")
           
-          # Folder check logic
+          # File check logic
           files = glob.glob("output/*.txt")
-          
-          if not files:
-              print("❌ Error: Whisper ne koi transcript file nahi banayi!")
-              exit(1)
-          
-          with open(files[0], "r", encoding="utf-8") as f:
-              transcript = f.read()
+          transcript = ""
+          if files:
+              with open(files[0], "r", encoding="utf-8") as f:
+                  transcript = f.read()
 
-          msg = MIMEMultipart()
-          msg["Subject"] = "LIVE YOUTUBE - AI Transcription Result"
-          msg["From"] = formataddr(("Live YouTube AI", user))
-          msg["To"] = target
-          msg.attach(MIMEText(f"Aapka transcript niche hai:\n\n{transcript}", 'plain'))
+          # --- 1. DASHBOARD SUMMARY (Hamesha visible rahega refresh ke baad bhi) ---
+          summary_file = os.environ.get('GITHUB_STEP_SUMMARY')
+          with open(summary_file, 'a') as f:
+              f.write(f"# 🎯 Transcription Result Dashboard\n")
+              f.write(f"### ✅ Status: Process Completed\n\n")
+              
+              if transcript:
+                  f.write(f"#### 📝 Generated Transcript:\n")
+                  f.write(f"```text\n{transcript}\n```\n\n")
+                  f.write(f"---\n")
+                  f.write(f"### ⚙️ Options & Controls\n")
+                  f.write(f"🔃 **[Regenerate with New Settings](${{ github.server_url }}/${{ github.repository }}/actions/workflows/transcribe.yml)**\n\n")
+                  f.write(f"🌐 **Quality Backup:** Agar result sahi nahi hai, toh yahan try karein:\n")
+                  f.write(f"👉 **[Open Turboscribe Dashboard](https://turboscribe.ai/dashboard)**\n")
+              else:
+                  f.write(f"❌ Error: Transcription fail ho gayi. Dobara koshish karein.\n")
 
-          try:
-              server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
-              server.login(user, password)
-              server.send_message(msg)
-              server.quit()
-              print("✅ Success: Mail sent!")
-          except Exception as e:
-              print(f"❌ Login Fail: {e}")
-              exit(1)
+          # --- 2. EMAIL BACKUP LOGIC ---
+          if transcript and user and password:
+              msg = MIMEMultipart()
+              msg["Subject"] = "✅ Transcription Complete: Your AI Result"
+              msg["From"] = formataddr(("Live AI Engine", user))
+              msg["To"] = target
+              msg.attach(MIMEText(f"Aapka transcript taiyar hai.\n\nDashboard link: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}\n\nResult:\n\n{transcript}", 'plain'))
+              
+              try:
+                  with smtplib.SMTP_SSL("smtp.gmail.com", 465) as server:
+                      server.login(user, password)
+                      server.send_message(msg)
+                  print("✅ Email sent successfully!")
+              except Exception as e:
+                  print(f"❌ Email Login Fail: {e}")
           EOF
+
+      - name: Create Download Button (Artifact)
+        uses: actions/upload-artifact@v4
+        with:
+          name: Final-Transcript
+          path: output/*.txt
