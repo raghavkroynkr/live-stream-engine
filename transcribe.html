@@ -3,65 +3,58 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI TRANSCRIBER PRO</title>
+    <title>AI TRANSCRIBER</title>
     <style>
         :root { --blue: #00d4ff; --dark: #0a0a0c; --glass: rgba(255, 255, 255, 0.05); }
         body { font-family: 'Inter', sans-serif; background: var(--dark); background-image: radial-gradient(circle at 50% -20%, #002244 0%, var(--dark) 80%); color: white; display: flex; flex-direction: column; align-items: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { width: 100%; max-width: 420px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 25px; box-sizing: border-box; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
-        .header h1 { font-size: 28px; font-weight: 900; text-align: center; text-transform: uppercase; color: var(--blue); margin: 0; letter-spacing: 1px; }
-        .back-btn { align-self: flex-start; color: #888; text-decoration: none; font-size: 13px; margin-bottom: 20px; transition: 0.3s; }
-        .back-btn:hover { color: var(--blue); }
-        .input-field { width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.5); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-bottom: 15px; box-sizing: border-box; outline: none; transition: 0.3s; font-size: 14px; }
-        .input-field:focus { border-color: var(--blue); box-shadow: 0 0 10px rgba(0, 212, 255, 0.2); }
-        .flex-group { display: flex; gap: 12px; margin-bottom: 5px; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #0088ff, #00d4ff); transition: 0.4s; box-shadow: 0 10px 20px rgba(0, 136, 255, 0.3); }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 15px 25px rgba(0, 136, 255, 0.4); opacity: 0.9; }
-        .btn:active { transform: translateY(0); }
-        #status { text-align: center; margin-top: 20px; color: #aaa; font-size: 13px; font-weight: 500; }
-        select option { background: #1a1a1c; color: white; }
+        .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 25px; box-sizing: border-box; }
+        .header h1 { font-size: 28px; font-weight: 900; text-align: center; text-transform: uppercase; color: var(--blue); margin: 0; }
+        .back-btn { align-self: flex-start; color: #666; text-decoration: none; font-size: 14px; margin-bottom: 15px; }
+        .input-field { width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #0088ff, #00d4ff); }
+        #status { text-align:center; margin-top:15px; color:#888; font-size:13px; }
+        /* Naya Section for Result Link */
+        .result-link-box { display: none; margin-top: 15px; text-align: center; padding: 10px; border: 1px dashed var(--blue); border-radius: 12px; background: rgba(0, 212, 255, 0.05); }
+        .result-link-box a { color: var(--blue); text-decoration: none; font-weight: bold; font-size: 14px; }
     </style>
 </head>
 <body>
     <a href="index.html" class="back-btn">← DASHBOARD</a>
     <div class="container">
         <div class="header"><h1>AI TRANSCRIBER</h1></div>
-        <p style="text-align:center; font-size:11px; color:#666; margin-bottom:25px; letter-spacing: 2px;">V2.0 | GLOBAL AI ENGINE</p>
+        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:20px;">V2.0 | GLOBAL AI ENGINE</p>
         
-        <input type="text" id="audioUrl" class="input-field" placeholder="Paste YouTube/Audio/Video Link">
+        <input type="text" id="audioUrl" class="input-field" placeholder="Paste Audio/Video Link">
         
-        <div class="flex-group">
+        <div style="display:flex; gap:10px;">
             <select id="srcLang" class="input-field">
-                <option value="auto" selected>🌍 Auto Detect</option>
-                <optgroup label="Popular">
-                    <option value="hi">Hindi (हिंदी)</option>
-                    <option value="en">English</option>
-                    <option value="es">Spanish</option>
-                    <option value="fr">French</option>
-                </optgroup>
-                <optgroup label="All Languages">
-                    <option value="af">Afrikaans</option><option value="ar">Arabic</option>
-                    <option value="as">Assamese</option><option value="bn">Bengali</option>
-                    <option value="gu">Gujarati</option><option value="kn">Kannada</option>
-                    <option value="ml">Malayalam</option><option value="mr">Marathi</option>
-                    <option value="ne">Nepali</option><option value="pa">Punjabi</option>
-                    <option value="ta">Tamil</option><option value="te">Telugu</option>
-                    <option value="ur">Urdu</option><option value="zh">Chinese</option>
-                    <option value="ja">Japanese</option><option value="ko">Korean</option>
-                    <option value="ru">Russian</option><option value="de">German</option>
-                    <option value="it">Italian</option><option value="pt">Portuguese</option>
-                    </optgroup>
-            </select>
+                <option value="auto">Auto Detect</option>
+                <option value="hi">Hindi</option>
+                <option value="en">English</option>
+                <option value="bn">Bengali</option>
+                <option value="mr">Marathi</option>
+                <option value="gu">Gujarati</option>
+                <option value="ta">Tamil</option>
+                <option value="te">Telugu</option>
+                <option value="ur">Urdu</option>
+                <option value="pa">Punjabi</option>
+                </select>
 
             <select id="task" class="input-field">
-                <option value="transcribe" selected>Original</option>
+                <option value="transcribe">Original</option>
                 <option value="translate">Translate Eng</option>
             </select>
         </div>
         
-        <input type="email" id="targetEmail" class="input-field" placeholder="Result kahan bhejien? (Email ID)">
-        <input type="password" id="gToken" class="input-field" placeholder="GitHub Classic Token">
+        <input type="email" id="targetEmail" class="input-field" placeholder="Aapka Email ID">
+        <input type="password" id="gToken" class="input-field" placeholder="GitHub Token">
         
         <button class="btn" onclick="runAI()">🎙️ Transcribe & Send</button>
+
+        <div id="resultBox" class="result-link-box">
+            <a id="actionLink" href="#" target="_blank">📋 VIEW & COPY TIMELINE TEXT</a>
+        </div>
+
         <div id="status">System: Ready</div>
     </div>
 
@@ -70,16 +63,15 @@
             const urlInp = document.getElementById('audioUrl');
             const emailInp = document.getElementById('targetEmail');
             const tokenInp = document.getElementById('gToken');
-            const langInp = document.getElementById('srcLang');
-            const taskInp = document.getElementById('task');
             const status = document.getElementById('status');
+            const resultBox = document.getElementById('resultBox');
+            const actionLink = document.getElementById('actionLink');
 
-            // Validation
-            if (!urlInp.value.trim()) { alert("⚠️ Bhai, Link toh daalo!"); return; }
-            if (!emailInp.value.trim()) { alert("⚠️ Bhai, Email zaroori hai!"); return; }
-            if (!tokenInp.value.trim()) { alert("⚠️ Bhai, GitHub Token missing hai!"); return; }
+            if (!urlInp.value.trim()) { alert("⚠️ Video link missing!"); return; }
+            if (!emailInp.value.trim()) { alert("⚠️ Email ID missing!"); return; }
+            if (!tokenInp.value.trim()) { alert("⚠️ GitHub Token missing!"); return; }
 
-            status.innerHTML = "⏳ <span style='color:var(--blue)'>AI Engine Processing...</span><br><small>Check Email in 5-10 mins</small>";
+            status.innerText = "⏳ AI Engine Processing...";
             
             try {
                 const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/transcribe.yml/dispatches', {
@@ -93,21 +85,22 @@
                         inputs: { 
                             file_url: urlInp.value.trim(), 
                             email: emailInp.value.trim(), 
-                            language: langInp.value, 
-                            task: taskInp.value 
+                            language: document.getElementById('srcLang').value, 
+                            task: document.getElementById('task').value 
                         } 
                     })
                 });
 
                 if(res.status === 204) {
-                    status.innerHTML = "✅ <span style='color:#00ff88'>Request Successful!</span><br>Process shuru ho gaya hai.";
-                    urlInp.value = ""; // Clear input
+                    status.innerHTML = "✅ Request Sent! Check Email in 10 mins.";
+                    // Naya logic: Seedha Action page par bhejna taaki user text copy kar sake
+                    actionLink.href = "https://github.com/raghavkroynkr/live-stream-engine/actions";
+                    resultBox.style.display = "block";
                 } else {
-                    const errData = await res.json();
-                    status.innerHTML = "❌ <span style='color:#ff4444'>Error: " + res.status + "</span><br>" + (errData.message || "Token check karein.");
+                    status.innerText = "❌ Token Error!";
                 }
             } catch (err) {
-                status.innerHTML = "❌ Connection Failed!";
+                status.innerText = "❌ System Offline!";
             }
         }
     </script>
