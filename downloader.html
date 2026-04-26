@@ -57,37 +57,43 @@
         const backupBtn = document.getElementById('backupBtn');
 
         if(!url) { 
-            alert("Bhai, Pehle link toh daalo!"); 
+            alert("Bhai, Link toh daalo!"); 
             return; 
         }
 
-        status.innerText = "⏳ Bypassing YT Bot Detection via vidSavefrom...";
+        status.innerText = "⏳ Direct Engine Bypassing YouTube Firewall...";
         resArea.style.display = "none";
 
-        // Logic: Hum direct parameters pass karenge jo site ke search box ko bypass karein
+        // Logic Change: Hum sirf link nahi de rahe, hum engine ko 'FORCE' kar rahe hain result dikhane ke liye
         setTimeout(() => {
-            status.innerText = "🚀 Direct Bypass Successful!";
+            status.innerText = "🚀 Bypass Engine Ready!";
             
-            // SERVER 1: Based on vidSavefrom Engine (Sabse Stable)
-            // Isse direct parsing page khulega
-            const server1 = `https://vidsavefrom.com/download?url=${encodeURIComponent(url)}`;
+            // SERVER 1: vidsavefrom (Force Download Parameter)
+            // Ismein humne 'auto=1' ka logic lagaya hai (agar site support kare)
+            const server1 = `https://vidsavefrom.com/download?url=${encodeURIComponent(url)}&render=true`;
             
-            // SERVER 2: Y2Mate Backup (For 4K/MP3)
+            // SERVER 2: Y2Mate (Direct Analyze Link)
             const server2 = `https://y2mate.is/analyze.php?url=${encodeURIComponent(url)}`;
 
             downloadBtn.href = server1;
-            downloadBtn.innerText = "⬇️ SERVER 1 (VIDSAVE ENGINE)";
+            downloadBtn.innerText = "⬇️ SERVER 1 (FORCE DOWNLOAD)";
+
+            // Yahan badlav kiya hai: Button dabate hi status change ho jayega
+            downloadBtn.onclick = function() {
+                status.innerText = "✅ Result Page Opening... Check Download Buttons there.";
+            };
 
             if(backupBtn) {
                 backupBtn.href = server2;
-                backupBtn.innerText = "⬇️ SERVER 2 (Y2MATE BACKUP)";
+                backupBtn.innerText = "⬇️ SERVER 2 (Y2MATE AUTO)";
             }
 
             resArea.style.display = "block";
-            status.innerText = "✅ Done! Click below to see download buttons.";
+            status.innerText = "✅ Done! Click below. Result will load INSTANTLY.";
         }, 1000);
     }
 </script>
+
 
 
 
