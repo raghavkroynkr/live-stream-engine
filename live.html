@@ -41,39 +41,70 @@
         <div id="status" class="status-bar">Engine Status: Standby</div>
     </div>
 
-    <script>
-        async function runLive() {
-            const firstLink = document.querySelector('.vLink');
-            const skeyInput = document.getElementById('sKey');
-            const durInput = document.getElementById('durVal');
-            const tokenInput = document.getElementById('gToken');
-            const status = document.getElementById('status');
+    <div class="container">
+    <h2>🚀 Live Stream Engine v2.0</h2>
+    
+    <div class="input-group">
+        <label>🎥 Video Links (Comma Separated)</label>
+        <textarea id="videoUrls" placeholder="Link 1, Link 2, Link 3..." rows="3"></textarea>
+        <small>Panch (5) links tak yahan dal sakte hain.</small>
+    </div>
 
-            if (!firstLink.value.trim()) { alert("⚠️ Bhai, kam se kam ek Video Link toh daalo!"); firstLink.focus(); return; }
-            if (!skeyInput.value.trim()) { alert("⚠️ Bhai, Stream Key missing hai!"); skeyInput.focus(); return; }
-            if (!durInput.value.trim()) { alert("⚠️ Bhai, Streaming ka time set karo!"); durInput.focus(); return; }
-            if (!tokenInput.value.trim()) { alert("⚠️ Bhai, GitHub Token bhool gaye!"); tokenInput.focus(); return; }
+    <div class="input-group">
+        <label>🔑 YouTube Stream Key</label>
+        <input type="password" id="streamKey" placeholder="Enter Stream Key">
+    </div>
 
-            status.innerText = "⏳ Sending Signal...";
-            const links = Array.from(document.querySelectorAll('.vLink')).map(i => i.value.trim()).filter(l => l !== "");
-            
+    <div class="input-group">
+        <label>⏱️ Duration (Seconds)</label>
+        <input type="number" id="duration" value="3600">
+    </div>
+
+    <button onclick="startStreaming()" id="btnText">🔥 Start Non-Stop Stream</button>
+    
+    <div id="status" class="status-box">Ready to go!</div>
+</div>
+
+<script>
+    async function startStreaming() {
+        const urls = document.getElementById('videoUrls').value;
+        const key = document.getElementById('streamKey').value;
+        const dur = document.getElementById('duration').value;
+        const status = document.getElementById('status');
+        const token = "YOUR_GITHUB_TOKEN"; // Ise apne token se badlein
+
+        if(!urls || !key) { alert("Bhai, Links aur Key dono zaroori hain!"); return; }
+
+        status.innerHTML = "⏳ Initializing Engine...";
+        
+        try {
             const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
                 method: 'POST',
-                headers: { 'Authorization': `Bearer ${tokenInput.value.trim()}` },
+                headers: { 
+                    'Authorization': `Bearer ${token}`,
+                    'Accept': 'application/vnd.github+json'
+                },
                 body: JSON.stringify({ 
                     ref: 'main', 
                     inputs: { 
-                        video_urls: links.join(','), 
-                        duration: (parseInt(durInput.value)*(document.getElementById('durUnit').value==="minutes"?60:3600)).toString(), 
-                        stream_key: skeyInput.value.trim() 
+                        video_urls: urls, 
+                        stream_key: key, 
+                        duration: dur 
                     } 
                 })
             });
+
             if(res.status === 204) {
-                status.innerHTML = "✅ Stream Engine Started!";
-                status.style.color = "#00ff88";
+                status.innerHTML = "✅ Streaming Started! Check YouTube.";
+                status.style.color = "#00ffcc";
+            } else {
+                status.innerHTML = "❌ GitHub Error: Check Token.";
             }
+        } catch (err) {
+            status.innerHTML = "❌ Connection Failed!";
         }
-    </script>
+    }
+</script>
+
 </body>
 </html>
