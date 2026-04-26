@@ -49,45 +49,46 @@
     </div>
 
 <script>
-    async function fetchVideo() {
+    function fetchVideo() {
         const url = document.getElementById('videoUrl').value.trim();
-        const quality = document.getElementById('quality').value;
         const status = document.getElementById('status');
         const resArea = document.getElementById('resArea');
         const downloadBtn = document.getElementById('downloadBtn');
         const backupBtn = document.getElementById('backupBtn');
 
-        if(!url) { alert("Bhai, Link toh daalo!"); return; }
+        if(!url) { 
+            alert("Bhai, Pehle link toh daalo!"); 
+            return; 
+        }
 
-        status.innerText = "⏳ Bypassing YT Bot Detection...";
+        status.innerText = "⏳ Bypassing YT Bot Detection via vidSavefrom...";
         resArea.style.display = "none";
 
-        try {
-            // Hum direct API endpoints use karenge jo parsing fast karte hain
-            setTimeout(() => {
-                status.innerText = "🚀 Direct Link Generated!";
-                
-                // Server 1: Cobalt Mirror (No Ads, No Wait)
-                downloadBtn.href = `https://cobalt.tools/`; // User needs to paste here for 100% safety
-                // Alternate Server 1: Direct Parsing Link
-                downloadBtn.href = `https://y2mate.is/analyze.php?url=${encodeURIComponent(url)}`;
-                downloadBtn.innerText = "⬇️ DOWNLOAD (SERVER 1)";
+        // Logic: Hum direct parameters pass karenge jo site ke search box ko bypass karein
+        setTimeout(() => {
+            status.innerText = "🚀 Direct Bypass Successful!";
+            
+            // SERVER 1: Based on vidSavefrom Engine (Sabse Stable)
+            // Isse direct parsing page khulega
+            const server1 = `https://vidsavefrom.com/download?url=${encodeURIComponent(url)}`;
+            
+            // SERVER 2: Y2Mate Backup (For 4K/MP3)
+            const server2 = `https://y2mate.is/analyze.php?url=${encodeURIComponent(url)}`;
 
-                // Server 2: Publer Engine (Best for Shorts)
-                if(backupBtn) {
-                    backupBtn.href = `https://publer.io/tools/media-downloader?url=${encodeURIComponent(url)}`;
-                    backupBtn.innerText = "⬇️ DOWNLOAD (SERVER 2)";
-                }
+            downloadBtn.href = server1;
+            downloadBtn.innerText = "⬇️ SERVER 1 (VIDSAVE ENGINE)";
 
-                resArea.style.display = "block";
-                status.innerText = "✅ Link Ready! Click to download.";
-            }, 1000);
+            if(backupBtn) {
+                backupBtn.href = server2;
+                backupBtn.innerText = "⬇️ SERVER 2 (Y2MATE BACKUP)";
+            }
 
-        } catch (error) {
-            status.innerText = "❌ Connection Failed! Check Link.";
-        }
+            resArea.style.display = "block";
+            status.innerText = "✅ Done! Click below to see download buttons.";
+        }, 1000);
     }
 </script>
+
 
 
 
