@@ -1,0 +1,22 @@
+{
+  "name": "Viral Tube Stream Engine",
+  "short_name": "StreamEngine",
+  "description": "AI Powered 24/7 Live Stream Dashboard",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#000000",
+  "theme_color": "#ff0000",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/727/727218.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/727/727218.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
