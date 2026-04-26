@@ -4,6 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>V3.5 PRO PANEL</title>
+    <link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#ff0000">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+    
     <style>
         :root { --red: #ff0000; --blue: #00d4ff; --dark: #0a0a0c; }
         body { font-family: 'Inter', sans-serif; background: var(--dark); color: white; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
@@ -37,6 +42,15 @@
     <h2>📥 Video Downloader</h2>
     <p>Download from YouTube, FB, Insta & more</p>
     </a>
+    <script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('sw.js')
+        .then(reg => console.log('Service Worker Registered'))
+        .catch(err => console.log('SW Registration Failed', err));
+    });
+  }
+    </script>
     
     
 </body>
