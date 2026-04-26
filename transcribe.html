@@ -62,62 +62,97 @@
         <div id="status">System: Ready</div>
     </div>
 
-    <script>
-        async function runAI() {
-            const url = document.getElementById('audioUrl');
-            const email = document.getElementById('targetEmail');
-            const token = document.getElementById('gToken');
-            const status = document.getElementById('status');
-            const copyArea = document.getElementById('copyArea');
-            const actionUrl = document.getElementById('actionUrl');
+<script>
+    let checkInterval; // Background checking ke liye
 
-            if (!url.value.trim()) { alert("⚠️ Video Link zaroori hai!"); return; }
-            if (!email.value.trim()) { alert("⚠️ Email ID zaroori hai!"); return; }
-            if (!token.value.trim()) { alert("⚠️ GitHub Token zaroori hai!"); return; }
+    async function runAI() {
+        const url = document.getElementById('audioUrl');
+        const email = document.getElementById('targetEmail');
+        const token = document.getElementById('gToken');
+        const status = document.getElementById('status');
+        const copyArea = document.getElementById('copyArea');
+        const actionUrl = document.getElementById('actionUrl');
+        const repo = "raghavkroynkr/live-stream-engine";
 
-            status.innerHTML = "⏳ <span style='color:var(--blue)'>AI Engine Processing...</span>";
-            
-            // Logic to handle Task vs Language Translation
-            const selectedTask = document.getElementById('taskLang').value;
-            let finalTask = "transcribe";
-            let finalLang = document.getElementById('srcLang').value;
+        if (!url.value.trim()) { alert("⚠️ Video Link zaroori hai!"); return; }
+        if (!email.value.trim()) { alert("⚠️ Email ID zaroori hai!"); return; }
+        if (!token.value.trim()) { alert("⚠️ GitHub Token zaroori hai!"); return; }
 
-            if(selectedTask === "translate") {
-                finalTask = "translate";
-            } else if(selectedTask !== "transcribe") {
-                // Agar user ne specific output language chuni hai toh usey hi use karein
-                finalLang = selectedTask;
-            }
+        status.innerHTML = "⏳ <span style='color:var(--blue)'>AI Engine Processing...</span>";
+        
+        const selectedTask = document.getElementById('taskLang').value;
+        let finalTask = "transcribe";
+        let finalLang = document.getElementById('srcLang').value;
 
-            try {
-                const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/transcribe.yml/dispatches', {
-                    method: 'POST',
-                    headers: { 
-                        'Authorization': `Bearer ${token.value.trim()}`,
-                        'Accept': 'application/vnd.github+json'
-                    },
-                    body: JSON.stringify({ 
-                        ref: 'main', 
-                        inputs: { 
-                            file_url: url.value.trim(), 
-                            email: email.value.trim(), 
-                            language: finalLang, 
-                            task: finalTask 
-                        } 
-                    })
-                });
-
-                if(res.status === 204) {
-                    status.innerHTML = "✅ Request Sent Successfully!";
-                    actionUrl.href = "https://github.com/raghavkroynkr/live-stream-engine/actions";
-                    copyArea.style.display = "block";
-                } else {
-                    status.innerHTML = "❌ Error: Token invalid ya permissions issue.";
-                }
-            } catch (err) {
-                status.innerHTML = "❌ Connection Failed!";
-            }
+        if(selectedTask === "translate") {
+            finalTask = "translate";
+        } else if(selectedTask !== "transcribe") {
+            finalLang = selectedTask;
         }
-    </script>
+
+        try {
+            const res = await fetch(`https://api.github.com/repos/${repo}/actions/workflows/transcribe.yml/dispatches`, {
+                method: 'POST',
+                headers: { 
+                    'Authorization': `Bearer ${token.value.trim()}`,
+                    'Accept': 'application/vnd.github+json'
+                },
+                body: JSON.stringify({ 
+                    ref: 'main', 
+                    inputs: { 
+                        file_url: url.value.trim(), 
+                        email: email.value.trim(), 
+                        language: finalLang, 
+                        task: finalTask 
+                    } 
+                })
+            });
+
+            if(res.status === 204) {
+                // YAHAN BADLAV HAI: User ko ab dashboard par hi wait karwayenge
+                status.innerHTML = "✅ AI is working... Don't close this page.";
+                // Background mein check karna shuru karein
+                startPolling(token.value.trim(), repo);
+            } else {
+                status.innerHTML = "❌ Error: Token invalid ya permissions issue.";
+            }
+        } catch (err) {
+            status.innerHTML = "❌ Connection Failed!";
+        }
+    }
+
+    // Naya Function: User ko GitHub dikhaye bina status check karne ke liye
+    async function startPolling(token, repo) {
+        const status = document.getElementById('status');
+        const copyArea = document.getElementById('copyArea');
+        
+        // Purane button ko hide kar dete hain kyunki user ko wahan nahi jana
+        copyArea.style.display = "none";
+
+        checkInterval = setInterval(async () => {
+            try {
+                const runRes = await fetch(`https://api.github.com/repos/${repo}/actions/runs?per_page=1`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await runRes.json();
+                const latestRun = data.workflow_runs[0];
+
+                if(latestRun.status === "in_progress") {
+                    status.innerHTML = "⏳ AI Transcribing... (5-10 mins wait)";
+                } 
+                else if(latestRun.status === "completed") {
+                    clearInterval(checkInterval);
+                    if(latestRun.conclusion === "success") {
+                        status.innerHTML = "<b style='color:#00ffcc'>✅ Transcription Complete! Check your Email.</b>";
+                        alert("Bhai, kaam ho gaya! Email check karo.");
+                    } else {
+                        status.innerHTML = "<b style='color:#ff4444'>❌ AI Processing Failed.</b>";
+                    }
+                }
+            } catch (e) { console.log("Checking status..."); }
+        }, 20000); // Har 20 seconds mein status update hoga
+    }
+</script>
+
 </body>
 </html>
