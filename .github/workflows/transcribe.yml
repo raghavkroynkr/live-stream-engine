@@ -26,11 +26,15 @@ jobs:
 
       - name: Run Whisper AI
         run: |
+          mkdir -p output
+          # Media download logic
           curl -L "${{ github.event.inputs.file_url }}" -o input_media
+          
+          # Force Whisper to run and wait for it
           if [ "${{ github.event.inputs.language }}" = "auto" ]; then
-            whisper input_media --model base --task ${{ github.event.inputs.task }} --output_dir output
+            python3 -m whisper input_media --model base --task ${{ github.event.inputs.task }} --output_dir output
           else
-            whisper input_media --model base --language ${{ github.event.inputs.language }} --task ${{ github.event.inputs.task }} --output_dir output
+            python3 -m whisper input_media --model base --language ${{ github.event.inputs.language }} --task ${{ github.event.inputs.task }} --output_dir output
           fi
 
       - name: Send Email Result
@@ -45,7 +49,6 @@ jobs:
           from email.mime.multipart import MIMEMultipart
           from email.utils import formataddr
 
-          # Invisible characters (\xa0) clean karne ke liye taaki login fail na ho
           def clean(text):
               return re.sub(r'[^\x20-\x7E]', '', text).strip() if text else ""
 
@@ -53,30 +56,29 @@ jobs:
           password = clean(os.environ.get("MAIL_PASS"))
           target = os.environ.get("TARGET_EMAIL")
           
-          # Whisper ke 'output' folder se file uthana
+          # Folder check logic
           files = glob.glob("output/*.txt")
           
           if not files:
-              print("❌ Output file nahi mili!")
+              print("❌ Error: Whisper ne koi transcript file nahi banayi!")
               exit(1)
           
           with open(files[0], "r", encoding="utf-8") as f:
-              content = f.read()
+              transcript = f.read()
 
           msg = MIMEMultipart()
           msg["Subject"] = "LIVE YOUTUBE - AI Transcription Result"
           msg["From"] = formataddr(("Live YouTube AI", user))
           msg["To"] = target
-          msg.attach(MIMEText(f"Aapka AI transcript taiyar hai:\n\n{content}", 'plain'))
+          msg.attach(MIMEText(f"Aapka transcript niche hai:\n\n{transcript}", 'plain'))
 
           try:
-              # SSL connection for Gmail
               server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
               server.login(user, password)
               server.send_message(msg)
               server.quit()
-              print("✅ Mail Sent Successfully!")
+              print("✅ Success: Mail sent!")
           except Exception as e:
-              print(f"❌ Login/Email Error: {e}")
+              print(f"❌ Login Fail: {e}")
               exit(1)
           EOF
