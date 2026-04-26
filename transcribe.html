@@ -10,11 +10,12 @@
         .container { width: 100%; max-width: 400px; background: var(--glass); backdrop-filter: blur(25px); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 30px; padding: 25px; box-sizing: border-box; }
         .header h1 { font-size: 28px; font-weight: 900; text-align: center; text-transform: uppercase; color: var(--blue); margin: 0; }
         .back-btn { align-self: flex-start; color: #666; text-decoration: none; font-size: 14px; margin-bottom: 15px; }
-        .input-field { width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; }
-        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #0088ff, #00d4ff); }
+        .input-field { width: 100%; padding: 14px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; color: white; margin-bottom: 12px; box-sizing: border-box; outline: none; transition: 0.3s; }
+        .input-field:focus { border-color: var(--blue); }
+        .btn { width: 100%; padding: 18px; border: none; border-radius: 15px; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; background: linear-gradient(135deg, #0088ff, #00d4ff); margin-top: 10px; }
+        label { font-size: 11px; color: #888; margin-bottom: 5px; display: block; margin-left: 5px; }
         #status { text-align:center; margin-top:15px; color:#888; font-size:13px; }
-        /* Naya Section for Result Link */
-        .result-link-box { display: none; margin-top: 15px; text-align: center; padding: 10px; border: 1px dashed var(--blue); border-radius: 12px; background: rgba(0, 212, 255, 0.05); }
+        .result-link-box { display: none; margin-top: 15px; text-align: center; padding: 12px; border: 1px dashed var(--blue); border-radius: 15px; background: rgba(0, 212, 255, 0.05); }
         .result-link-box a { color: var(--blue); text-decoration: none; font-weight: bold; font-size: 14px; }
     </style>
 </head>
@@ -22,37 +23,37 @@
     <a href="index.html" class="back-btn">← DASHBOARD</a>
     <div class="container">
         <div class="header"><h1>AI TRANSCRIBER</h1></div>
-        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:20px;">V2.0 | GLOBAL AI ENGINE</p>
+        <p style="text-align:center; font-size:11px; color:#555; margin-bottom:20px;">V2.1 | GLOBAL AI ENGINE</p>
         
-        <input type="text" id="audioUrl" class="input-field" placeholder="Paste Audio/Video Link">
+        <label>Video/Audio Link:</label>
+        <input type="text" id="audioUrl" class="input-field" placeholder="Paste Link Here">
         
         <div style="display:flex; gap:10px;">
-            <select id="srcLang" class="input-field">
-                <option value="auto">Auto Detect</option>
-                <option value="hi">Hindi</option>
-                <option value="en">English</option>
-                <option value="bn">Bengali</option>
-                <option value="mr">Marathi</option>
-                <option value="gu">Gujarati</option>
-                <option value="ta">Tamil</option>
-                <option value="te">Telugu</option>
-                <option value="ur">Urdu</option>
-                <option value="pa">Punjabi</option>
+            <div style="flex:1">
+                <label>Video Language:</label>
+                <select id="srcLang" class="input-field">
+                    <option value="auto">Auto Detect</option>
+                    <option value="hi">Hindi</option><option value="en">English</option><option value="bn">Bengali</option><option value="mr">Marathi</option><option value="gu">Gujarati</option><option value="ta">Tamil</option><option value="te">Telugu</option><option value="ur">Urdu</option><option value="pa">Punjabi</option><option value="kn">Kannada</option><option value="ml">Malayalam</option><option value="as">Assamese</option><option value="ne">Nepali</option><option value="sa">Sanskrit</option><option value="es">Spanish</option><option value="fr">French</option><option value="de">German</option><option value="ja">Japanese</option><option value="ko">Korean</option><option value="ru">Russian</option><option value="zh">Chinese</option><option value="ar">Arabic</option><option value="pt">Portuguese</option><option value="it">Italian</option><option value="tr">Turkish</option><option value="vi">Vietnamese</option><option value="th">Thai</option><option value="id">Indonesian</option>
                 </select>
-
-            <select id="task" class="input-field">
-                <option value="transcribe">Original</option>
-                <option value="translate">Translate Eng</option>
-            </select>
+            </div>
+            <div style="flex:1">
+                <label>Task / Result:</label>
+                <select id="task" class="input-field">
+                    <option value="transcribe">Original (Text)</option>
+                    <option value="translate">Translate to Eng</option>
+                </select>
+            </div>
         </div>
         
-        <input type="email" id="targetEmail" class="input-field" placeholder="Aapka Email ID">
-        <input type="password" id="gToken" class="input-field" placeholder="GitHub Token">
+        <label>Email Delivery & Security:</label>
+        <input type="email" id="targetEmail" class="input-field" placeholder="Email for Backup">
+        <input type="password" id="gToken" class="input-field" placeholder="GitHub Classic Token">
         
         <button class="btn" onclick="runAI()">🎙️ Transcribe & Send</button>
-
+        
         <div id="resultBox" class="result-link-box">
-            <a id="actionLink" href="#" target="_blank">📋 VIEW & COPY TIMELINE TEXT</a>
+            <a id="actionLink" href="#" target="_blank">📋 CLICK TO COPY TEXT & TIMELINE</a>
+            <p style="font-size: 10px; color: #666; margin-top: 5px;">Process takes 5-10 mins. Refresh link then.</p>
         </div>
 
         <div id="status">System: Ready</div>
@@ -67,11 +68,11 @@
             const resultBox = document.getElementById('resultBox');
             const actionLink = document.getElementById('actionLink');
 
-            if (!urlInp.value.trim()) { alert("⚠️ Video link missing!"); return; }
-            if (!emailInp.value.trim()) { alert("⚠️ Email ID missing!"); return; }
-            if (!tokenInp.value.trim()) { alert("⚠️ GitHub Token missing!"); return; }
+            if (!urlInp.value.trim()) { alert("⚠️ Bhai, Link toh daalo!"); return; }
+            if (!emailInp.value.trim()) { alert("⚠️ Email missing hai!"); return; }
+            if (!tokenInp.value.trim()) { alert("⚠️ GitHub Token zaroori hai!"); return; }
 
-            status.innerText = "⏳ AI Engine Processing...";
+            status.innerHTML = "⏳ <span style='color:var(--blue)'>AI Engine Working...</span>";
             
             try {
                 const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/transcribe.yml/dispatches', {
@@ -92,15 +93,15 @@
                 });
 
                 if(res.status === 204) {
-                    status.innerHTML = "✅ Request Sent! Check Email in 10 mins.";
-                    // Naya logic: Seedha Action page par bhejna taaki user text copy kar sake
+                    status.innerHTML = "✅ Request Sent Successfully!";
+                    // Direct Action link for copy-pasting text
                     actionLink.href = "https://github.com/raghavkroynkr/live-stream-engine/actions";
                     resultBox.style.display = "block";
                 } else {
-                    status.innerText = "❌ Token Error!";
+                    status.innerHTML = "❌ Error: Token invalid ya permissions check karein.";
                 }
             } catch (err) {
-                status.innerText = "❌ System Offline!";
+                status.innerHTML = "❌ Connection Error!";
             }
         }
     </script>
