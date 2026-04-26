@@ -1,6 +1,31 @@
+name: STREAM ENGINE
+
+on:
+  workflow_dispatch:
+    inputs:
+      video_urls:
+        description: 'Comma separated video URLs'
+        required: true
+      stream_key:
+        description: 'YouTube Stream Key'
+        required: true
+      duration:
+        description: 'Duration in seconds'
+        required: true
+
+jobs:
+  stream:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Install FFmpeg
+        run: sudo apt-get update && sudo apt-get install -y ffmpeg
+
       - name: Run Engine
         run: |
-          # Playlist setup
+          # Playlist setup logic
           IFS=',' read -ra ADDR <<< "${{ github.event.inputs.video_urls }}"
           > playlist.txt
           for i in "${ADDR[@]}"; do
@@ -10,7 +35,6 @@
           echo "🚀 Stream looping active..."
           
           # Stable Looper Command
-          # -re aur -t ka sahi combination jo crash nahi hota
           ffmpeg -re -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
           -stream_loop -1 -i playlist.txt \
           -t ${{ github.event.inputs.duration }} \
