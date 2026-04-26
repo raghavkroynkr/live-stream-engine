@@ -17,6 +17,12 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup JDK 17
+        uses: actions/setup-java@v3
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -27,9 +33,16 @@ jobs:
 
       - name: Build APK
         run: |
-          # PWA to APK Conversion
-          bubblewrap init --manifest="${{ github.event.inputs.web_url }}/manifest.json" --skipConfig
-          bubblewrap build --skipConfig
+          # Sabse pehle Bubblewrap ko batana hoga ki setup automate karna hai
+          # 'yes' command ka use karke hum saare prompts ko 'y' bhej rahe hain
+          yes | bubblewrap init --manifest="${{ github.event.inputs.web_url }}/manifest.json"
+          
+          # Build ke waqt passwords aur configuration ki zarurat hoti hai
+          # Bina signing key ke debug build banane ke liye:
+          yes | bubblewrap build --skipConfig
+        env:
+          # Agar aap signing key use nahi kar rahe toh Bubblewrap environment variables mang sakta hai
+          BUBBLEWRAP_JDK_PATH: ${{ env.JAVA_HOME }}
 
       - name: Send APK via Email
         shell: python
@@ -43,17 +56,24 @@ jobs:
           from email.message import EmailMessage
 
           # APK file dhoondhna
-          apk_files = [f for f in os.listdir('.') if f.endswith('.apk')]
+          apk_files = []
+          for root, dirs, files in os.walk("."):
+              for file in files:
+                  if file.endswith(".apk"):
+                      apk_files.append(os.path.join(root, file))
+          
           if not apk_files:
+              print("No APK found!")
               exit(1)
           
+          # Sabse naya built APK uthana
           apk_path = apk_files[0]
           
           msg = EmailMessage()
           msg["Subject"] = f"Aapka App Taiyar Hai: {os.environ['APP_NAME']}"
           msg["From"] = os.environ["MAIL_USER"]
           msg["To"] = os.environ["TARGET_EMAIL"]
-          msg.set_content(f"Namaste! Aapka professional ad-free APK ban chuka hai. Kripya attachment check karein.")
+          msg.set_content(f"Namaste! Aapka APK ban chuka hai. Kripya attachment check karein.")
 
           with open(apk_path, 'rb') as f:
               file_data = f.read()
