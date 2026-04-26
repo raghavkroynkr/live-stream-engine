@@ -18,7 +18,6 @@
             min-height: 100vh; margin: 0; padding: 15px; overflow-x: hidden;
         }
 
-        /* --- WATERCOLOR FLOW BACKGROUND --- */
         .watercolor-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
             background: linear-gradient(45deg, #1a0000, #000, #00001a, #000);
@@ -30,17 +29,17 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* --- TOP DASHBOARD BUTTON (MISSING FIXED) --- */
         .top-nav {
             width: 100%; max-width: 420px; padding: 10px 0 20px 5px;
             display: flex; align-items: center;
         }
         .back-btn {
-            color: #555; text-decoration: none; font-size: 14px; font-weight: 700;
+            color: #666; text-decoration: none; font-size: 14px; font-weight: 700;
             display: flex; align-items: center; gap: 8px; letter-spacing: 1px;
+            transition: 0.3s;
         }
+        .back-btn:hover { color: var(--neon-red); }
 
-        /* --- CONTAINER & HEADER --- */
         .container { 
             width: 100%; max-width: 420px; 
             background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
@@ -75,7 +74,6 @@
 
         .v-box { border-left: 4px solid var(--neon-red); margin-bottom: 12px; border-radius: 4px; }
 
-        /* --- BUTTONS --- */
         .btn-start { 
             width: 100%; padding: 20px; border: none; border-radius: 22px; 
             color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; 
@@ -97,7 +95,7 @@
     <div class="watercolor-bg"></div>
 
     <div class="top-nav">
-        <a href="#" class="back-btn">← DASHBOARD</a>
+        <a href="index.html" class="back-btn">← DASHBOARD</a>
     </div>
 
     <div class="container">
@@ -152,7 +150,6 @@
             const unit = document.getElementById('timeUnit').value;
             const val = parseFloat(document.getElementById('timeVal').value) || 0;
             
-            // Calculation for GitHub Engine
             let finalSeconds = unit === 'days' ? val * 86400 : val * 3600;
 
             const linkInputs = document.querySelectorAll('.vLink');
