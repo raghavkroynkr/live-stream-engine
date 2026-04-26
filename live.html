@@ -3,35 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LIVE STREAM - ULTIMATE PRO</title>
+    <title>STREAM ENGINE - PRO DASHBOARD</title>
     <style>
         :root { 
             --neon-red: #ff0000; 
-            --dark-bg: #0d0d0f; 
-            --card-bg: rgba(20, 20, 25, 0.7);
+            --dark-bg: #000; 
+            --card-bg: rgba(20, 20, 25, 0.8);
             --border: rgba(255, 0, 0, 0.2);
         }
         
         body { 
-            font-family: 'Inter', sans-serif; 
-            background: var(--dark-bg); 
-            color: #fff; 
-            display: flex; 
-            flex-direction: column; 
-            align-items: center; 
-            min-height: 100vh; 
-            margin: 0; 
-            padding: 20px; 
-            overflow-x: hidden;
+            font-family: 'Inter', sans-serif; background: var(--dark-bg); color: #fff; 
+            display: flex; flex-direction: column; align-items: center; 
+            min-height: 100vh; margin: 0; padding: 15px; overflow-x: hidden;
         }
 
-        /* --- WATERCOLOR ANIMATION BACKGROUND --- */
+        /* --- WATERCOLOR FLOW BACKGROUND --- */
         .watercolor-bg {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            z-index: -1;
-            background: linear-gradient(45deg, #1a0000, #0d0d0f, #00001a, #0d0d0f);
-            background-size: 400% 400%;
-            animation: waterFlow 15s ease infinite;
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(45deg, #1a0000, #000, #00001a, #000);
+            background-size: 400% 400%; animation: waterFlow 15s ease infinite;
         }
         @keyframes waterFlow {
             0% { background-position: 0% 50%; }
@@ -39,88 +30,81 @@
             100% { background-position: 0% 50%; }
         }
 
-        /* Adjusted Header & Container */
+        /* --- TOP DASHBOARD BUTTON (MISSING FIXED) --- */
+        .top-nav {
+            width: 100%; max-width: 420px; padding: 10px 0 20px 5px;
+            display: flex; align-items: center;
+        }
+        .back-btn {
+            color: #555; text-decoration: none; font-size: 14px; font-weight: 700;
+            display: flex; align-items: center; gap: 8px; letter-spacing: 1px;
+        }
+
+        /* --- CONTAINER & HEADER --- */
         .container { 
             width: 100%; max-width: 420px; 
-            background: var(--card-bg); 
-            backdrop-filter: blur(25px); 
-            border: 1px solid var(--border); 
-            border-radius: 35px; padding: 25px; 
-            box-shadow: 0 0 40px rgba(255, 0, 0, 0.15); 
-            box-sizing: border-box; 
-            margin-top: 10px;
+            background: var(--card-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border); border-radius: 40px; padding: 25px; 
+            box-shadow: 0 0 50px rgba(255, 0, 0, 0.15); box-sizing: border-box; 
         }
 
         .header h1 { 
-            font-size: 28px; text-align: center; letter-spacing: 3px; 
-            text-transform: uppercase; background: linear-gradient(to right, #ff0000, #ff6666); 
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent; 
-            margin: 0 0 5px 0; font-weight: 900;
-            text-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+            font-size: 28px; text-align: center; letter-spacing: 4px; 
+            text-transform: uppercase; margin: 0 0 5px 0; font-weight: 900;
+            background: linear-gradient(to right, #ff0000, #ff6666);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
         }
-
-        .sub-text { text-align: center; font-size: 10px; color: #555; margin-bottom: 20px; letter-spacing: 1px; }
+        .sub-text { text-align: center; font-size: 10px; color: #444; margin-bottom: 25px; text-transform: uppercase; }
 
         .label-text { 
             font-size: 11px; font-weight: 700; color: #ff3333; 
-            text-transform: uppercase; margin-bottom: 6px; 
-            display: block; letter-spacing: 1px; margin-left: 10px;
+            text-transform: uppercase; margin: 0 0 8px 12px; display: block;
         }
 
         .input-field, .select-field { 
-            width: 100%; padding: 14px; 
-            background: rgba(0, 0, 0, 0.5); 
-            border: 1px solid rgba(255, 255, 255, 0.08); 
-            border-radius: 15px; color: white; 
-            box-sizing: border-box; transition: 0.3s; font-size: 14px;
+            width: 100%; padding: 16px; background: rgba(0, 0, 0, 0.6); 
+            border: 1px solid rgba(255, 255, 255, 0.08); border-radius: 18px; 
+            color: white; box-sizing: border-box; font-size: 14px; transition: 0.3s;
         }
 
         select.select-field {
             appearance: none;
             background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='red' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-            background-repeat: no-repeat;
-            background-position: right 12px center;
-            background-size: 14px;
+            background-repeat: no-repeat; background-position: right 15px center; background-size: 14px;
         }
 
-        .input-field:focus { border-color: var(--neon-red); outline: none; box-shadow: 0 0 12px rgba(255, 0, 0, 0.2); }
+        .v-box { border-left: 4px solid var(--neon-red); margin-bottom: 12px; border-radius: 4px; }
 
-        .v-box { border-left: 3px solid var(--neon-red); margin-bottom: 10px; border-radius: 2px; }
-
-        /* Main Launch Button */
+        /* --- BUTTONS --- */
         .btn-start { 
-            width: 100%; padding: 18px; border: none; border-radius: 20px; 
+            width: 100%; padding: 20px; border: none; border-radius: 22px; 
             color: white; font-weight: 900; cursor: pointer; text-transform: uppercase; 
             background: linear-gradient(135deg, #ff0000, #800000); 
-            box-shadow: 0 8px 25px rgba(255, 0, 0, 0.4); 
-            transition: 0.3s ease; margin-top: 15px; letter-spacing: 1px;
+            box-shadow: 0 10px 30px rgba(255, 0, 0, 0.4); margin-top: 20px;
         }
 
-        .btn-start:active { transform: scale(0.97); }
-
-        /* Missing Info/Guide Button */
         .info-btn {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            margin-top: 20px; padding: 12px 25px;
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 50px; font-size: 12px; color: #777;
-            text-decoration: none; transition: 0.3s;
+            margin-top: 25px; padding: 12px 30px; background: rgba(255, 255, 255, 0.03);
+            border-radius: 50px; font-size: 12px; color: #666; text-decoration: none;
+            display: flex; align-items: center; gap: 10px; border: 1px solid rgba(255,255,255,0.05);
         }
-        .info-btn:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
 
-        .status-msg { margin-top: 15px; text-align: center; font-size: 12px; font-weight: 700; }
+        .status-msg { margin-top: 15px; text-align: center; font-size: 12px; font-weight: 700; color: #444; }
     </style>
 </head>
 <body>
 
     <div class="watercolor-bg"></div>
 
+    <div class="top-nav">
+        <a href="#" class="back-btn">← DASHBOARD</a>
+    </div>
+
     <div class="container">
         <div class="header"><h1>STREAM ENGINE</h1></div>
         <div class="sub-text">Non-Stop 24/7 Looper Active</div>
         
-        <div class="v-box"><span class="label-text">🎥 Video Link 01 (Main)</span><input type="text" class="vLink input-field" placeholder="Paste URL Here..."></div>
+        <div class="v-box"><span class="label-text">🎥 Video Link 01 (Main)</span><input type="text" class="vLink input-field" placeholder="Paste URL..."></div>
         <div class="v-box"><span class="label-text">🎥 Video Link 02</span><input type="text" class="vLink input-field" placeholder="URL 2..."></div>
         <div class="v-box"><span class="label-text">🎥 Video Link 03</span><input type="text" class="vLink input-field" placeholder="URL 3..."></div>
         <div class="v-box"><span class="label-text">🎥 Video Link 04</span><input type="text" class="vLink input-field" placeholder="URL 4..."></div>
@@ -128,12 +112,12 @@
 
         <div style="margin: 20px 0; border-top: 1px solid rgba(255,255,255,0.05);"></div>
 
-        <div class="input-box">
+        <div class="input-box" style="margin-bottom: 15px;">
             <span class="label-text">🔑 YouTube Stream Key</span>
             <input type="password" id="sKey" class="input-field" placeholder="Enter Stream Key...">
         </div>
 
-        <div style="display:flex; gap:12px; margin-bottom: 18px;">
+        <div style="display:flex; gap:12px; margin-bottom: 15px;">
             <div style="flex:1;">
                 <span class="label-text">⏱️ Unit</span>
                 <select id="timeUnit" class="select-field">
@@ -152,8 +136,8 @@
             <input type="password" id="gToken" class="input-field" placeholder="Paste Token...">
         </div>
 
-        <button class="btn-start" onclick="runEngine()">🚀 Launch Live Stream</button>
-        <div id="status" class="status-msg" style="color: #444;">System: Standby Mode</div>
+        <button class="btn-start" onclick="runEngine()">🚀 LAUNCH LIVE STREAM</button>
+        <div id="status" class="status-msg">System: Standby Mode</div>
     </div>
 
     <a href="guide.html" class="info-btn">
@@ -168,6 +152,7 @@
             const unit = document.getElementById('timeUnit').value;
             const val = parseFloat(document.getElementById('timeVal').value) || 0;
             
+            // Calculation for GitHub Engine
             let finalSeconds = unit === 'days' ? val * 86400 : val * 3600;
 
             const linkInputs = document.querySelectorAll('.vLink');
@@ -175,11 +160,10 @@
             linkInputs.forEach(input => { if(input.value.trim() !== "") linksArray.push(input.value.trim()); });
 
             if(linksArray.length === 0 || !sKey || !token || val <= 0) {
-                alert("Details sahi se bhariye bhai!");
-                return;
+                alert("Details sahi se bhariye bhai!"); return;
             }
 
-            status.innerHTML = "📡 Processing Request...";
+            status.innerHTML = "📡 Firing up the engine...";
             status.style.color = "#ffaa00";
 
             try {
@@ -189,14 +173,14 @@
                     body: JSON.stringify({ ref: 'main', inputs: { video_urls: linksArray.join(','), stream_key: sKey, duration: finalSeconds.toString() } })
                 });
                 if(res.status === 204) {
-                    status.innerHTML = "✅ Stream Triggered Successfully!";
+                    status.innerHTML = "✅ SUCCESS! Engine is LIVE.";
                     status.style.color = "#00ffcc";
                 } else {
-                    status.innerHTML = "❌ Error: Check Token/Auth.";
+                    status.innerHTML = "❌ AUTH ERROR: Check Token.";
                     status.style.color = "#ff4444";
                 }
             } catch (err) {
-                status.innerHTML = "❌ System Error!";
+                status.innerHTML = "❌ SYSTEM ERROR!";
                 status.style.color = "#ff4444";
             }
         }
