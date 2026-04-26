@@ -152,7 +152,6 @@
             
             let finalSeconds = unit === 'days' ? val * 86400 : val * 3600;
 
-            // --- SMART LINK MERGE LOGIC ---
             const linkInputs = document.querySelectorAll('.vLink');
             let linksArray = [];
             linkInputs.forEach(input => { 
@@ -161,20 +160,20 @@
                 }
             });
 
-            // Isme se koi bhi khali hoga tabhi alert aayega
             if(!token || !sKey || linksArray.length === 0 || val <= 0) {
                 alert("Details sahi se bhariye bhai (Token, Key aur kam se kam 1 Link)!"); 
                 return;
             }
 
-            status.innerHTML = "📡 Firing up the engine...";
+            status.innerHTML = "📡 Connecting to GitHub...";
             status.style.color = "#ffaa00";
 
             try {
+                // Fixed Path based on your screenshots
                 const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
                     method: 'POST',
                     headers: { 
-                        'Authorization': `Bearer ${token}`, 
+                        'Authorization': `token ${token}`, // Changed to 'token' for better classic compatibility
                         'Accept': 'application/vnd.github+json',
                         'X-GitHub-Api-Version': '2022-11-28'
                     },
@@ -192,13 +191,23 @@
                     status.innerHTML = "✅ SUCCESS! Engine is LIVE.";
                     status.style.color = "#00ffcc";
                 } else {
-                    // Yahan check kijiye ki aapne token mein 'workflow' permission di hai ya nahi
-                    status.innerHTML = "❌ AUTH ERROR: Check Token/Repo.";
+                    const errorText = await res.text();
+                    status.innerHTML = "❌ AUTH ERROR: Check Token.";
                     status.style.color = "#ff4444";
+                    
+                    // Detailed troubleshooting alert
+                    if(res.status === 401) {
+                        alert("Error 401: Token invalid hai ya 'workflow' permission nahi di hai.");
+                    } else if(res.status === 404) {
+                        alert("Error 404: stream.yml nahi mili ya repo path galat hai.");
+                    } else {
+                        alert("GitHub Error " + res.status + ": " + errorText);
+                    }
                 }
             } catch (err) {
                 status.innerHTML = "❌ SYSTEM ERROR!";
                 status.style.color = "#ff4444";
+                alert("Network error: Internet check karein.");
             }
         }
     </script>
