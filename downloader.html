@@ -61,38 +61,34 @@
             return; 
         }
 
-        status.innerText = "⏳ Direct Engine Bypassing YouTube Firewall...";
+        status.innerText = "⏳ Engines Connecting... Direct Access Mode";
         resArea.style.display = "none";
 
-        // Logic Change: Hum sirf link nahi de rahe, hum engine ko 'FORCE' kar rahe hain result dikhane ke liye
         setTimeout(() => {
-            status.innerText = "🚀 Bypass Engine Ready!";
+            status.innerText = "🚀 Links Ready! Click to Open.";
             
-            // SERVER 1: vidsavefrom (Force Download Parameter)
-            // Ismein humne 'auto=1' ka logic lagaya hai (agar site support kare)
-            const server1 = `https://vidsavefrom.com/download?url=${encodeURIComponent(url)}&render=true`;
+            // SERVER 1: vidsavefrom (Jo aapne suggest kiya tha - Best for manual search)
+            const server1 = `https://vidsavefrom.com/download?url=${encodeURIComponent(url)}`;
             
-            // SERVER 2: Y2Mate (Direct Analyze Link)
-            const server2 = `https://y2mate.is/analyze.php?url=${encodeURIComponent(url)}`;
+            // SERVER 2: Save.Tube (Jo aapne manga - Fast aur Reliable)
+            const server2 = `https://save.tube/parse?url=${encodeURIComponent(url)}`;
 
+            // Link 1 Configuration
             downloadBtn.href = server1;
-            downloadBtn.innerText = "⬇️ SERVER 1 (FORCE DOWNLOAD)";
+            downloadBtn.innerText = "⬇️ SERVER 1 (VIDSAVE)";
 
-            // Yahan badlav kiya hai: Button dabate hi status change ho jayega
-            downloadBtn.onclick = function() {
-                status.innerText = "✅ Result Page Opening... Check Download Buttons there.";
-            };
-
+            // Link 2 Configuration (Now using Save.Tube)
             if(backupBtn) {
                 backupBtn.href = server2;
-                backupBtn.innerText = "⬇️ SERVER 2 (Y2MATE AUTO)";
+                backupBtn.innerText = "⬇️ SERVER 2 (SAVE.TUBE)";
             }
 
             resArea.style.display = "block";
-            status.innerText = "✅ Done! Click below. Result will load INSTANTLY.";
-        }, 1000);
+            status.innerText = "✅ Done! Click Server 2 for faster results.";
+        }, 800);
     }
 </script>
+
 
 
 
