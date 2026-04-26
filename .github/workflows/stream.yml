@@ -1,42 +1,19 @@
-name: Ultimate Scheduled Looper
-
-on:
-  workflow_dispatch:
-    inputs:
-      video_urls:
-        description: 'Comma separated links'
-        required: true
-      duration:
-        description: 'Duration in seconds'
-        required: true
-      stream_key:
-        description: 'Dynamic Stream Key from App'
-        required: true
-
-jobs:
-  stream:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Setup Tools
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y ffmpeg
-
       - name: Run Engine
         run: |
-          # Playlist taiyar karna
+          # Playlist setup
           IFS=',' read -ra ADDR <<< "${{ github.event.inputs.video_urls }}"
-          touch playlist.txt
+          > playlist.txt
           for i in "${ADDR[@]}"; do
-            echo "file '$i'" >> playlist.txt
+            echo "file '$(echo $i | xargs)'" >> playlist.txt
           done
 
-          # FFmpeg ab seedha application se aayi hui key use karega
-          timeout ${{ github.event.inputs.duration }}s ffmpeg -re -f concat -safe 0 \
-          -protocol_whitelist file,http,https,tcp,tls -stream_loop -1 -i playlist.txt \
+          echo "🚀 Stream looping active..."
+          
+          # Stable Looper Command
+          # -re aur -t ka sahi combination jo crash nahi hota
+          ffmpeg -re -f concat -safe 0 -protocol_whitelist "file,http,https,tcp,tls" \
+          -stream_loop -1 -i playlist.txt \
+          -t ${{ github.event.inputs.duration }} \
           -vcodec libx264 -preset superfast -b:v 3000k -maxrate 3000k -bufsize 6000k \
           -pix_fmt yuv420p -g 60 -acodec aac -b:a 128k -ar 44100 \
-          -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.inputs.stream_key }}" || echo "Stream Stopped."
+          -f flv "rtmp://a.rtmp.youtube.com/live2/${{ github.event.inputs.stream_key }}"
