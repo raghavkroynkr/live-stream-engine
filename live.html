@@ -145,19 +145,26 @@
     <script>
         async function runEngine() {
             const status = document.getElementById('status');
-            const token = document.getElementById('gToken').value;
-            const sKey = document.getElementById('sKey').value;
+            const token = document.getElementById('gToken').value.trim();
+            const sKey = document.getElementById('sKey').value.trim();
             const unit = document.getElementById('timeUnit').value;
             const val = parseFloat(document.getElementById('timeVal').value) || 0;
             
             let finalSeconds = unit === 'days' ? val * 86400 : val * 3600;
 
+            // --- SMART LINK MERGE LOGIC ---
             const linkInputs = document.querySelectorAll('.vLink');
             let linksArray = [];
-            linkInputs.forEach(input => { if(input.value.trim() !== "") linksArray.push(input.value.trim()); });
+            linkInputs.forEach(input => { 
+                if(input.value.trim() !== "") {
+                    linksArray.push(input.value.trim()); 
+                }
+            });
 
-            if(linksArray.length === 0 || !sKey || !token || val <= 0) {
-                alert("Details sahi se bhariye bhai!"); return;
+            // Isme se koi bhi khali hoga tabhi alert aayega
+            if(!token || !sKey || linksArray.length === 0 || val <= 0) {
+                alert("Details sahi se bhariye bhai (Token, Key aur kam se kam 1 Link)!"); 
+                return;
             }
 
             status.innerHTML = "📡 Firing up the engine...";
@@ -166,14 +173,27 @@
             try {
                 const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/stream.yml/dispatches', {
                     method: 'POST',
-                    headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' },
-                    body: JSON.stringify({ ref: 'main', inputs: { video_urls: linksArray.join(','), stream_key: sKey, duration: finalSeconds.toString() } })
+                    headers: { 
+                        'Authorization': `Bearer ${token}`, 
+                        'Accept': 'application/vnd.github+json',
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    },
+                    body: JSON.stringify({ 
+                        ref: 'main', 
+                        inputs: { 
+                            video_urls: linksArray.join(','), 
+                            stream_key: sKey, 
+                            duration: finalSeconds.toString() 
+                        } 
+                    })
                 });
+
                 if(res.status === 204) {
                     status.innerHTML = "✅ SUCCESS! Engine is LIVE.";
                     status.style.color = "#00ffcc";
                 } else {
-                    status.innerHTML = "❌ AUTH ERROR: Check Token.";
+                    // Yahan check kijiye ki aapne token mein 'workflow' permission di hai ya nahi
+                    status.innerHTML = "❌ AUTH ERROR: Check Token/Repo.";
                     status.style.color = "#ff4444";
                 }
             } catch (err) {
