@@ -55,7 +55,7 @@
             </div>
             <div class="p-3 bg-white/5 rounded-lg border border-white/5 text-center">
                 <span class="text-xs text-gray-400 block uppercase">Engine</span>
-                <span class="font-bold">Stable Video</span>
+                <span class="font-bold">ModelScope</span>
             </div>
         </div>
 
@@ -66,7 +66,7 @@
 
         <div id="loading" class="hidden mt-10 text-center">
             <div class="inline-block animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
-            <p class="mt-4 text-gray-400">AI is dreaming your video... (It may take 1-2 mins)</p>
+            <p class="mt-4 text-gray-400 italic" id="statusText">AI is dreaming your video... (It may take 1-2 mins)</p>
         </div>
 
         <div id="outputContainer" class="hidden mt-10 rounded-xl overflow-hidden border border-white/10 shadow-2xl">
@@ -75,34 +75,72 @@
             </video>
             <div class="p-4 bg-white/5 flex justify-between items-center">
                 <span class="text-sm text-gray-400">Ready to download!</span>
-                <button class="text-purple-400 font-semibold hover:underline">Download MP4</button>
+                <a id="downloadBtn" href="#" download="ai-video.mp4" class="text-purple-400 font-semibold hover:underline">Download MP4</a>
             </div>
         </div>
     </div>
 
     <script>
-        function startGeneration() {
+        // 1. Apni API Key yahan dalein
+        const HF_TOKEN = "YOUR_HUGGING_FACE_TOKEN_HERE"; 
+
+        async function startGeneration() {
             const prompt = document.getElementById('promptInput').value;
+            const genBtn = document.getElementById('genBtn');
+            const loading = document.getElementById('loading');
+            const outputContainer = document.getElementById('outputContainer');
+            const resultVideo = document.getElementById('resultVideo');
+            const downloadBtn = document.getElementById('downloadBtn');
+
             if(!prompt) {
-                alert("Please enter a prompt first!");
+                alert("Bhai, pehle prompt toh likho!");
                 return;
             }
 
-            // UI Changes
-            document.getElementById('genBtn').disabled = true;
-            document.getElementById('genBtn').innerText = "Processing...";
-            document.getElementById('loading').classList.remove('hidden');
-            document.getElementById('outputContainer').classList.add('hidden');
+            // UI Reset & Loading State
+            genBtn.disabled = true;
+            genBtn.innerText = "Processing...";
+            genBtn.classList.add('opacity-50');
+            loading.classList.remove('hidden');
+            outputContainer.classList.add('hidden');
 
-            // API Integration Logic (Placeholder)
-            // Yahan aap Hugging Face ya kisi free API ka fetch call lagayenge
-            setTimeout(() => {
-                // Ye sirf demonstration ke liye hai
-                document.getElementById('loading').classList.add('hidden');
-                document.getElementById('outputContainer').classList.remove('hidden');
-                document.getElementById('genBtn').disabled = false;
-                document.getElementById('genBtn').innerText = "Generate Magic Video";
-            }, 5000); 
+            try {
+                // 2. API Call
+                const response = await fetch(
+                    "https://api-inference.huggingface.co/models/ali-vilab/modelscope-damo-text-to-video-hd",
+                    {
+                        headers: { 
+                            "Authorization": `Bearer ${HF_TOKEN}`,
+                            "Content-Type": "application/json" 
+                        },
+                        method: "POST",
+                        body: JSON.stringify({ inputs: prompt }),
+                    }
+                );
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.error || "Model load ho raha hai, 1 minute baad try karein.");
+                }
+
+                const blob = await response.blob();
+                const videoUrl = URL.createObjectURL(blob);
+                
+                // 3. Show Result
+                resultVideo.src = videoUrl;
+                downloadBtn.href = videoUrl; // Download link update
+                
+                loading.classList.add('hidden');
+                outputContainer.classList.remove('hidden');
+
+            } catch (error) {
+                alert("Alert: " + error.message);
+                loading.classList.add('hidden');
+            } finally {
+                genBtn.disabled = false;
+                genBtn.innerText = "Generate Magic Video";
+                genBtn.classList.remove('opacity-50');
+            }
         }
     </script>
 </body>
