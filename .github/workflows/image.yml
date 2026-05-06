@@ -7,19 +7,23 @@ on:
         description: 'Describe the image'
         required: true
       aspect_ratio:
-        description: 'Ratio (1:1, 16:9, 9:16)'
+        description: 'Ratio'
         required: true
         default: '1:1'
 
 jobs:
   generate:
     runs-on: ubuntu-latest
+    # GITHUB KO LIKHNE KI PERMISSION DENA ZAROORI HAI
+    permissions:
+      contents: write
+    
     steps:
       - name: Checkout Repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # Updated to v4 for Node 20 support
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5 # Updated to v5
         with:
           python-version: '3.9'
 
@@ -29,36 +33,40 @@ jobs:
       - name: Run Generation Script
         env:
           PROMPT: ${{ github.event.inputs.prompt }}
-          RATIO: ${{ github.event.inputs.aspect_ratio }}
         run: |
           python - <<EOF
           import os
           import requests
           import time
 
-          # Gemini-style free inference (Using Stable Diffusion XL or similar)
+          # Public Free Inference API
           API_URL = "https://api-inference.huggingface.co/models/stabilityai/stable-diffusion-xl-base-1.0"
           
           prompt = os.getenv("PROMPT")
-          ratio = os.getenv("RATIO")
-          
-          print(f"🎨 Generating: {prompt} with ratio {ratio}")
+          print(f"🎨 Generating: {prompt}")
 
           def query(payload):
-              # Hum yahan public inference use kar rahe hain jo free hai
-              response = requests.post(API_URL, json=payload)
-              return response.content
+              # Try for 3 times if API is loading
+              for i in range(3):
+                  response = requests.post(API_URL, json=payload)
+                  if response.status_code == 200:
+                      return response.content
+                  print(f"Attempt {i+1}: API is loading, waiting...")
+                  time.sleep(10)
+              return None
 
           image_bytes = query({"inputs": prompt})
 
-          # Save the image
-          os.makedirs("generated_images", exist_ok=True)
-          filename = f"generated_images/ai_img_{int(time.time())}.png"
-          
-          with open(filename, "wb") as f:
-              f.write(image_bytes)
-          
-          print(f"✅ Image saved as {filename}")
+          if image_bytes:
+              os.makedirs("generated_images", exist_ok=True)
+              # Unique timestamp for polling detection
+              filename = f"generated_images/ai_img_{int(time.time())}.png"
+              with open(filename, "wb") as f:
+                  f.write(image_bytes)
+              print(f"✅ Image saved as {filename}")
+          else:
+              print("❌ Image generation failed!")
+              exit(1)
           EOF
 
       - name: Commit & Push Image
@@ -66,5 +74,5 @@ jobs:
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
           git add generated_images/*.png
-          git commit -m "🎨 New AI Image Generated"
+          git commit -m "🎨 AI Generated Image Added"
           git push
