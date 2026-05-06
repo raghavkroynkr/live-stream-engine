@@ -3,67 +3,119 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI IMAGE CREATOR - V3.5</title>
+    <title>AI IMAGE CREATOR - V3.5 PRO</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#bc13fe">
+    
     <style>
-        :root { --neon-purple: #bc13fe; --dark-bg: #050505; }
-        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
-        .chat-container { width: 100%; max-width: 500px; margin-top: 50px; position: relative; }
-        .input-area { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        textarea { background: transparent; border: none; color: white; outline: none; font-size: 16px; resize: none; min-height: 100px; padding: 10px; line-height: 1.5; }
-        .controls { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px 0 5px; border-top: 1px solid rgba(255,255,255,0.05); }
-        select { background: #1a1a1a; color: #aaa; border: 1px solid #333; border-radius: 10px; padding: 8px 12px; font-size: 12px; outline: none; cursor: pointer; }
+        :root { --neon-purple: #bc13fe; --dark-bg: #050505; --card-bg: rgba(20, 20, 25, 0.9); }
+        
+        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding: 15px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; overflow-x: hidden; }
+
+        /* Top Navigation */
+        .top-nav { width: 100%; max-width: 500px; padding: 10px 0 20px 5px; display: flex; align-items: center; justify-content: space-between; }
+        .back-btn { color: #666; text-decoration: none; font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 8px; letter-spacing: 1px; transition: 0.3s; }
+        .back-btn:hover { color: var(--neon-purple); }
+        .app-status { font-size: 11px; color: #444; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Output Area (Jahan Image Dikhegi) */
+        .output-container { width: 100%; max-width: 500px; min-height: 300px; background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid rgba(188, 19, 254, 0.1); border-radius: 30px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; box-shadow: 0 10px 50px rgba(0,0,0,0.5); transition: 0.5s; }
+        
+        #generatedImage { max-width: 100%; border-radius: 15px; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2); display: none; }
+        
+        .placeholder-text { color: #444; font-size: 14px; text-align: center; }
+
+        /* Download Button */
+        .download-btn { display: none; margin-top: 15px; padding: 10px 25px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 50px; color: #00ffcc; text-decoration: none; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
+        .download-btn:hover { background: rgba(0, 255, 204, 0.2); box-shadow: 0 0 15px rgba(0, 255, 204, 0.3); }
+
+        /* Prompt Input Area */
+        .chat-area { width: 100%; max-width: 500px; position: fixed; bottom: 20px; }
+        .input-box { background: var(--card-bg); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.08); border-radius: 25px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 -10px 40px rgba(0,0,0,0.6); }
+        
+        textarea { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 15px; resize: none; min-height: 50px; max-height: 100px; padding: 5px; font-family: inherit; }
+
+        select { background: #1a1a1a; color: #aaa; border: 1px solid #333; border-radius: 10px; padding: 8px 12px; font-size: 11px; outline: none; cursor: pointer; }
+
         .gen-btn { background: var(--neon-purple); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 0 15px rgba(188, 19, 254, 0.3); }
-        .gen-btn:hover { transform: scale(1.1) rotate(-10deg); box-shadow: 0 0 25px var(--neon-purple); }
-        .status-box { margin-top: 25px; font-size: 13px; color: #888; text-align: center; font-style: italic; }
-        .token-box { margin-bottom: 20px; width: 100%; max-width: 500px; }
-        .token-input { width: 100%; padding: 12px; background: #111; border: 1px solid #222; border-radius: 15px; color: #555; font-size: 12px; box-sizing: border-box; }
+        .gen-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--neon-purple); }
+        .gen-btn:disabled { background: #333; cursor: not-allowed; box-shadow: none; }
+
+        /* Loader */
+        .loader { border: 4px solid #1a1a1a; border-top: 4px solid var(--neon-purple); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; margin-bottom: 15px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Token Input */
+        .token-container { margin-bottom: 20px; width: 100%; max-width: 500px; }
+        .token-input { width: 100%; padding: 12px; background: #111; border: 1px solid #222; border-radius: 15px; color: #555; font-size: 11px; box-sizing: border-box; text-align: center; }
     </style>
 </head>
 <body>
 
-    <h2 style="letter-spacing: 3px; font-weight: 300; margin-bottom: 40px;">AI IMAGE <span style="color:var(--neon-purple)">CREATOR</span></h2>
-
-    <div class="token-box">
-        <input type="password" id="gToken" class="token-input" placeholder="Enter GitHub Token to authorize...">
+    <div class="top-nav">
+        <a href="index.html" class="back-btn">← DASHBOARD</a>
+        <div class="app-status">Viral Tube Engine</div>
     </div>
 
-    <div class="chat-container">
-        <div class="input-area">
-            <textarea id="prompt" placeholder="Gemini ki tarah prompt likho... (e.g. A futuristic city in 2050 with flying cars, cinematic lighting)"></textarea>
-            
-            <div class="controls">
-                <select id="ratio">
-                    <option value="1:1">Square (1:1)</option>
-                    <option value="16:9">YouTube (16:9)</option>
-                    <option value="9:16">Shorts (9:16)</option>
-                </select>
+    <div class="token-container">
+        <input type="password" id="gToken" class="token-input" placeholder="🔒 Enter GitHub Token to authorize image generation...">
+    </div>
 
-                <button class="gen-btn" onclick="runImageEngine()">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
-                </button>
-            </div>
+    <div class="output-container">
+        <div class="loader" id="loader"></div>
+        <div class="placeholder-text" id="placeholder">Image will appear here...</div>
+        <img id="generatedImage" alt="AI Generated Output">
+        <a id="downloadBtn" class="download-btn" download="ViralTube_AI.png">⬇️ Download Image</a>
+    </div>
+
+    <div style="height: 120px;"></div>
+
+    <div class="chat-area">
+        <div class="input-box">
+            <textarea id="prompt" placeholder="Gemini style detailed prompt likho... (e.g. A realistic sci-fi cityscape with neon rains)"></textarea>
+            
+            <select id="ratio">
+                <option value="1:1">1:1</option>
+                <option value="16:9">16:9</option>
+                <option value="9:16">9:16</option>
+            </select>
+
+            <button class="gen-btn" id="genBtn" onclick="runImageEngine()">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+            </button>
         </div>
-        <div id="status" class="status-box">Waiting for your command...</div>
     </div>
 
     <script>
+        const statusText = document.getElementById('placeholder');
+        const loader = document.getElementById('loader');
+        const imageDisplay = document.getElementById('generatedImage');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const genBtn = document.getElementById('genBtn');
+
+        // REPO CONFIG
+        const owner = 'raghavkroynkr'; // Apna sahi username
+        const repo = 'live-stream-engine'; // Apna sahi repo name
+        const folder = 'generated_images';
+
         async function runImageEngine() {
-            const status = document.getElementById('status');
             const prompt = document.getElementById('prompt').value.trim();
             const token = document.getElementById('gToken').value.trim();
             const ratio = document.getElementById('ratio').value;
 
-            if(!prompt || !token) {
-                alert("Bhai, Prompt aur Token dono zaroori hain!");
-                return;
-            }
+            if(!prompt || !token) { alert("Bhai, Prompt aur Token dono zaroori hain!"); return; }
 
-            status.innerHTML = "✨ Gemini Engine processing your request...";
-            status.style.color = "#bc13fe";
+            // Interface update
+            statusText.innerHTML = "📡 Contacting GitHub Action Engine...";
+            statusText.style.color = "#ffaa00";
+            loader.style.display = "block";
+            imageDisplay.style.display = "none";
+            downloadBtn.style.display = "none";
+            genBtn.disabled = true;
 
             try {
-                // Path must match your repo structure
-                const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/image.yml/dispatches', {
+                // Trigger GitHub Action
+                const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/image.yml/dispatches`, {
                     method: 'POST',
                     headers: { 
                         'Authorization': `token ${token}`,
@@ -72,23 +124,98 @@
                     },
                     body: JSON.stringify({ 
                         ref: 'main', 
-                        inputs: { 
-                            prompt: prompt, 
-                            aspect_ratio: ratio 
-                        } 
+                        inputs: { prompt: prompt, aspect_ratio: ratio } 
                     })
                 });
 
                 if(res.status === 204) {
-                    status.innerHTML = "🚀 Request sent! Image is being generated in GitHub Actions.";
-                    status.style.color = "#00ffcc";
+                    statusText.innerHTML = "✨ Engine started! Polling repository for new image (this takes 2-3 mins)...";
+                    
+                    // Polling logic start
+                    startPolling(token);
                 } else {
-                    status.innerHTML = "❌ Error: " + res.status;
-                    alert("Kuch galti hui! Check if image.yml exists.");
+                    alert("Kuch galti हुई! Error: " + res.status);
+                    resetUI();
                 }
-            } catch (err) {
-                status.innerHTML = "❌ Connection Failed!";
+            } catch (err) { alert("Network issue!"); resetUI(); }
+        }
+
+        // POLLING LOGIC (Checks GitHub for the image)
+        let pollInterval;
+        let attempts = 0;
+
+        function startPolling(token) {
+            attempts = 0;
+            if (pollInterval) clearInterval(pollInterval);
+            pollInterval = setInterval(() => checkRepoForImage(token), 10000); // Check every 10 secs
+        }
+
+        async function checkRepoForImage(token) {
+            attempts++;
+            statusText.innerHTML = `✨ Image is generating... Polling attempt ${attempts}/30 (takes approx 2-3 mins)`;
+
+            try {
+                // Get contents of 'generated_images' folder
+                const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}`, {
+                    headers: { 'Authorization': `token ${token}` }
+                });
+
+                if (res.ok) {
+                    const files = await res.json();
+                    
+                    // Filter images and sort by name to get the latest one (ai_img_TIMESTAMP.png)
+                    const imageFiles = files.filter(file => file.name.endsWith('.png'));
+                    if (imageFiles.length > 0) {
+                        imageFiles.sort((a, b) => b.name.localeCompare(a.name)); 
+                        const latestImage = imageFiles[0];
+                        
+                        // Check if it's a new image (simple heuristic: name changed from before)
+                        if (!imageDisplay.src || !imageDisplay.src.includes(latestImage.name)) {
+                            displayImage(latestImage.download_url);
+                        }
+                    }
+                }
+
+                // Stop polling after 30 attempts (5 mins)
+                if (attempts >= 30) {
+                    clearInterval(pollInterval);
+                    statusText.innerHTML = "❌ Time out! GitHub Actions is taking too long. Check Action tab.";
+                    resetUI();
+                }
+
+            } catch (err) { console.error("Polling error:", err); }
+        }
+
+        // Display the image on screen
+        function displayImage(imageUrl) {
+            clearInterval(pollInterval);
+            imageDisplay.src = imageUrl;
+            downloadBtn.href = imageUrl;
+            
+            imageDisplay.onload = function() {
+                loader.style.display = "none";
+                statusText.style.display = "none";
+                imageDisplay.style.display = "block";
+                downloadBtn.style.display = "inline-flex";
+                genBtn.disabled = false;
+                
+                // Clear prompt box for next command
+                document.getElementById('prompt').value = ""; 
             }
+        }
+
+        function resetUI() {
+            if (pollInterval) clearInterval(pollInterval);
+            loader.style.display = "none";
+            statusText.innerHTML = "Image will appear here...";
+            genBtn.disabled = false;
+        }
+
+        // Manifest check for PWA functionality
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW Registered')).catch(err => console.log('SW Failed', err));
+            });
         }
     </script>
 </body>
