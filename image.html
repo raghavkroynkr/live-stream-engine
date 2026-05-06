@@ -18,61 +18,63 @@
         .back-btn:hover { color: var(--neon-purple); }
         .app-status { font-size: 11px; color: #444; text-transform: uppercase; letter-spacing: 1px; }
 
-        /* Output Area (Jahan Image Dikhegi) */
-        .output-container { width: 100%; max-width: 500px; min-height: 300px; background: var(--card-bg); backdrop-filter: blur(20px); border: 1px solid rgba(188, 19, 254, 0.1); border-radius: 30px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; box-shadow: 0 10px 50px rgba(0,0,0,0.5); transition: 0.5s; }
+        /* Output Area */
+        .output-container { width: 100%; max-width: 500px; min-height: 320px; background: var(--card-bg); backdrop-filter: blur(25px); border: 1px solid rgba(188, 19, 254, 0.15); border-radius: 30px; padding: 20px; box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; margin-bottom: 25px; box-shadow: 0 15px 50px rgba(0,0,0,0.7); }
         
-        #generatedImage { max-width: 100%; border-radius: 15px; box-shadow: 0 0 30px rgba(188, 19, 254, 0.2); display: none; }
+        #generatedImage { max-width: 100%; border-radius: 18px; box-shadow: 0 0 40px rgba(188, 19, 254, 0.25); display: none; transition: 0.5s ease-in-out; }
         
-        .placeholder-text { color: #444; font-size: 14px; text-align: center; }
+        .placeholder-text { color: #555; font-size: 14px; text-align: center; font-weight: 500; letter-spacing: 0.5px; }
 
         /* Download Button */
-        .download-btn { display: none; margin-top: 15px; padding: 10px 25px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 50px; color: #00ffcc; text-decoration: none; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; transition: 0.3s; }
-        .download-btn:hover { background: rgba(0, 255, 204, 0.2); box-shadow: 0 0 15px rgba(0, 255, 204, 0.3); }
+        .download-btn { display: none; margin-top: 20px; padding: 12px 30px; background: rgba(0, 255, 204, 0.1); border: 1px solid rgba(0, 255, 204, 0.3); border-radius: 50px; color: #00ffcc; text-decoration: none; font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 1.5px; transition: 0.3s; }
+        .download-btn:hover { background: #00ffcc; color: #000; box-shadow: 0 0 20px rgba(0, 255, 204, 0.4); }
 
-        /* Prompt Input Area */
-        .chat-area { width: 100%; max-width: 500px; position: fixed; bottom: 20px; }
-        .input-box { background: var(--card-bg); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.08); border-radius: 25px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; box-shadow: 0 -10px 40px rgba(0,0,0,0.6); }
+        /* Fixed Prompt Area */
+        .chat-area { width: 100%; max-width: 500px; position: fixed; bottom: 20px; z-index: 100; }
+        .input-box { background: rgba(15, 15, 20, 0.95); backdrop-filter: blur(30px); border: 1px solid rgba(255,255,255,0.1); border-radius: 30px; padding: 12px 18px; display: flex; align-items: center; gap: 12px; box-shadow: 0 -10px 50px rgba(0,0,0,0.8); }
         
-        textarea { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 15px; resize: none; min-height: 50px; max-height: 100px; padding: 5px; font-family: inherit; }
+        textarea { flex: 1; background: transparent; border: none; color: white; outline: none; font-size: 15px; resize: none; min-height: 45px; max-height: 120px; padding: 8px 0; font-family: inherit; }
 
-        select { background: #1a1a1a; color: #aaa; border: 1px solid #333; border-radius: 10px; padding: 8px 12px; font-size: 11px; outline: none; cursor: pointer; }
+        select { background: #15151a; color: #888; border: 1px solid #333; border-radius: 12px; padding: 8px; font-size: 11px; outline: none; cursor: pointer; transition: 0.3s; }
+        select:focus { border-color: var(--neon-purple); color: white; }
 
-        .gen-btn { background: var(--neon-purple); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 0 15px rgba(188, 19, 254, 0.3); }
-        .gen-btn:hover { transform: scale(1.05); box-shadow: 0 0 25px var(--neon-purple); }
-        .gen-btn:disabled { background: #333; cursor: not-allowed; box-shadow: none; }
+        .gen-btn { background: var(--neon-purple); border: none; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); box-shadow: 0 0 20px rgba(188, 19, 254, 0.4); }
+        .gen-btn:hover { transform: scale(1.1) rotate(-5deg); box-shadow: 0 0 35px var(--neon-purple); }
+        .gen-btn:disabled { background: #222; cursor: not-allowed; box-shadow: none; transform: none; }
 
         /* Loader */
-        .loader { border: 4px solid #1a1a1a; border-top: 4px solid var(--neon-purple); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; display: none; margin-bottom: 15px; }
+        .loader { border: 3px solid rgba(188, 19, 254, 0.1); border-top: 3px solid var(--neon-purple); border-radius: 50%; width: 45px; height: 45px; animation: spin 0.8s linear infinite; display: none; margin-bottom: 15px; }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Token Input */
+        /* Token UI */
         .token-container { margin-bottom: 20px; width: 100%; max-width: 500px; }
-        .token-input { width: 100%; padding: 12px; background: #111; border: 1px solid #222; border-radius: 15px; color: #555; font-size: 11px; box-sizing: border-box; text-align: center; }
+        .token-input { width: 100%; padding: 14px; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 18px; color: #444; font-size: 11px; box-sizing: border-box; text-align: center; transition: 0.3s; }
+        .token-input:focus { border-color: var(--neon-purple); color: #aaa; background: rgba(188, 19, 254, 0.05); }
     </style>
 </head>
 <body>
 
     <div class="top-nav">
         <a href="index.html" class="back-btn">← DASHBOARD</a>
-        <div class="app-status">Viral Tube Engine</div>
+        <div class="app-status">Viral Tube Engine v3.5</div>
     </div>
 
     <div class="token-container">
-        <input type="password" id="gToken" class="token-input" placeholder="🔒 Enter GitHub Token to authorize image generation...">
+        <input type="password" id="gToken" class="token-input" placeholder="🔒 Enter GitHub Token to authorize engine...">
     </div>
 
-    <div class="output-container">
+    <div class="output-container" id="mainDisplay">
         <div class="loader" id="loader"></div>
-        <div class="placeholder-text" id="placeholder">Image will appear here...</div>
-        <img id="generatedImage" alt="AI Generated Output">
+        <div class="placeholder-text" id="placeholder">Describe your vision below...</div>
+        <img id="generatedImage" alt="AI Output">
         <a id="downloadBtn" class="download-btn" download="ViralTube_AI.png">⬇️ Download Image</a>
     </div>
 
-    <div style="height: 120px;"></div>
+    <div style="height: 130px;"></div>
 
     <div class="chat-area">
         <div class="input-box">
-            <textarea id="prompt" placeholder="Gemini style detailed prompt likho... (e.g. A realistic sci-fi cityscape with neon rains)"></textarea>
+            <textarea id="prompt" placeholder="Gemini: An astronaut riding a horse on Mars, cinematic..."></textarea>
             
             <select id="ratio">
                 <option value="1:1">1:1</option>
@@ -81,7 +83,7 @@
             </select>
 
             <button class="gen-btn" id="genBtn" onclick="runImageEngine()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
             </button>
         </div>
     </div>
@@ -93,9 +95,9 @@
         const downloadBtn = document.getElementById('downloadBtn');
         const genBtn = document.getElementById('genBtn');
 
-        // REPO CONFIG
-        const owner = 'raghavkroynkr'; // Apna sahi username
-        const repo = 'live-stream-engine'; // Apna sahi repo name
+        // FIXED REPO CONFIG
+        const owner = 'raghavkroynkr'; 
+        const repo = 'live-stream-engine'; 
         const folder = 'generated_images';
 
         async function runImageEngine() {
@@ -103,18 +105,17 @@
             const token = document.getElementById('gToken').value.trim();
             const ratio = document.getElementById('ratio').value;
 
-            if(!prompt || !token) { alert("Bhai, Prompt aur Token dono zaroori hain!"); return; }
+            if(!prompt || !token) { alert("Bhai, Prompt aur Token dono dalna padega!"); return; }
 
-            // Interface update
-            statusText.innerHTML = "📡 Contacting GitHub Action Engine...";
-            statusText.style.color = "#ffaa00";
+            // UI Reset for new generation
+            statusText.innerHTML = "🚀 Waking up the Engine...";
+            statusText.style.color = "#bc13fe";
             loader.style.display = "block";
             imageDisplay.style.display = "none";
             downloadBtn.style.display = "none";
             genBtn.disabled = true;
 
             try {
-                // Trigger GitHub Action
                 const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/actions/workflows/image.yml/dispatches`, {
                     method: 'POST',
                     headers: { 
@@ -122,73 +123,58 @@
                         'Accept': 'application/vnd.github+json',
                         'X-GitHub-Api-Version': '2022-11-28'
                     },
-                    body: JSON.stringify({ 
-                        ref: 'main', 
-                        inputs: { prompt: prompt, aspect_ratio: ratio } 
-                    })
+                    body: JSON.stringify({ ref: 'main', inputs: { prompt: prompt, aspect_ratio: ratio } })
                 });
 
                 if(res.status === 204) {
-                    statusText.innerHTML = "✨ Engine started! Polling repository for new image (this takes 2-3 mins)...";
-                    
-                    // Polling logic start
+                    statusText.innerHTML = "🎨 AI is painting your vision... (Attempt 0/30)";
                     startPolling(token);
                 } else {
-                    alert("Kuch galti हुई! Error: " + res.status);
+                    alert("GitHub Error: " + res.status + " (Check Token Permissions)");
                     resetUI();
                 }
-            } catch (err) { alert("Network issue!"); resetUI(); }
+            } catch (err) { alert("Internet Check Karo Bhai!"); resetUI(); }
         }
 
-        // POLLING LOGIC (Checks GitHub for the image)
         let pollInterval;
-        let attempts = 0;
-
         function startPolling(token) {
-            attempts = 0;
+            let attempts = 0;
             if (pollInterval) clearInterval(pollInterval);
-            pollInterval = setInterval(() => checkRepoForImage(token), 10000); // Check every 10 secs
-        }
+            
+            pollInterval = setInterval(async () => {
+                attempts++;
+                const cacheBuster = new Date().getTime();
+                statusText.innerHTML = `🎨 AI is painting... Attempt ${attempts}/30`;
 
-        async function checkRepoForImage(token) {
-            attempts++;
-            statusText.innerHTML = `✨ Image is generating... Polling attempt ${attempts}/30 (takes approx 2-3 mins)`;
+                try {
+                    const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}?t=${cacheBuster}`, {
+                        headers: { 'Authorization': `token ${token}` }
+                    });
 
-            try {
-                // Get contents of 'generated_images' folder
-                const res = await fetch(`https://api.github.com/repos/${owner}/${repo}/contents/${folder}`, {
-                    headers: { 'Authorization': `token ${token}` }
-                });
-
-                if (res.ok) {
-                    const files = await res.json();
-                    
-                    // Filter images and sort by name to get the latest one (ai_img_TIMESTAMP.png)
-                    const imageFiles = files.filter(file => file.name.endsWith('.png'));
-                    if (imageFiles.length > 0) {
-                        imageFiles.sort((a, b) => b.name.localeCompare(a.name)); 
-                        const latestImage = imageFiles[0];
+                    if (res.ok) {
+                        const files = await res.json();
+                        const imageFiles = files.filter(f => f.name.endsWith('.png'));
                         
-                        // Check if it's a new image (simple heuristic: name changed from before)
-                        if (!imageDisplay.src || !imageDisplay.src.includes(latestImage.name)) {
-                            displayImage(latestImage.download_url);
+                        if (imageFiles.length > 0) {
+                            imageFiles.sort((a, b) => b.name.localeCompare(a.name)); 
+                            const latest = imageFiles[0];
+                            
+                            // Stop polling and display
+                            clearInterval(pollInterval);
+                            displayImage(`${latest.download_url}?t=${cacheBuster}`);
                         }
                     }
-                }
+                } catch (e) { console.error("Waiting for repo..."); }
 
-                // Stop polling after 30 attempts (5 mins)
                 if (attempts >= 30) {
                     clearInterval(pollInterval);
-                    statusText.innerHTML = "❌ Time out! GitHub Actions is taking too long. Check Action tab.";
-                    resetUI();
+                    statusText.innerHTML = "❌ Time Out! Check GitHub Action tab for errors.";
+                    genBtn.disabled = false;
                 }
-
-            } catch (err) { console.error("Polling error:", err); }
+            }, 10000); // Check every 10 seconds
         }
 
-        // Display the image on screen
         function displayImage(imageUrl) {
-            clearInterval(pollInterval);
             imageDisplay.src = imageUrl;
             downloadBtn.href = imageUrl;
             
@@ -198,24 +184,14 @@
                 imageDisplay.style.display = "block";
                 downloadBtn.style.display = "inline-flex";
                 genBtn.disabled = false;
-                
-                // Clear prompt box for next command
-                document.getElementById('prompt').value = ""; 
+                document.getElementById('prompt').value = ""; // Clear box
             }
         }
 
         function resetUI() {
-            if (pollInterval) clearInterval(pollInterval);
             loader.style.display = "none";
-            statusText.innerHTML = "Image will appear here...";
+            statusText.innerHTML = "Describe your vision below...";
             genBtn.disabled = false;
-        }
-
-        // Manifest check for PWA functionality
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('sw.js').then(reg => console.log('SW Registered')).catch(err => console.log('SW Failed', err));
-            });
         }
     </script>
 </body>
