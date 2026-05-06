@@ -6,41 +6,30 @@
     <title>AI IMAGE CREATOR - V3.5</title>
     <style>
         :root { --neon-purple: #bc13fe; --dark-bg: #050505; }
-        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
-        
-        .chat-container { width: 100%; max-width: 500px; margin-top: 50px; }
-        
-        .input-area { 
-            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
-            border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
-        }
-
-        textarea { 
-            background: transparent; border: none; color: white; outline: none; 
-            font-size: 16px; resize: none; min-height: 80px; 
-        }
-
-        .controls { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
-
-        select { background: #1a1a1a; color: #aaa; border: none; border-radius: 10px; padding: 5px 10px; font-size: 12px; }
-
-        .gen-btn { 
-            background: var(--neon-purple); border: none; border-radius: 50%; 
-            width: 45px; height: 45px; cursor: pointer; display: flex; 
-            align-items: center; justify-content: center; transition: 0.3s;
-        }
-        .gen-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--neon-purple); }
-
-        .status-box { margin-top: 20px; font-size: 13px; color: #666; text-align: center; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; min-height: 100vh; }
+        .chat-container { width: 100%; max-width: 500px; margin-top: 50px; position: relative; }
+        .input-area { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        textarea { background: transparent; border: none; color: white; outline: none; font-size: 16px; resize: none; min-height: 100px; padding: 10px; line-height: 1.5; }
+        .controls { display: flex; justify-content: space-between; align-items: center; padding: 10px 5px 0 5px; border-top: 1px solid rgba(255,255,255,0.05); }
+        select { background: #1a1a1a; color: #aaa; border: 1px solid #333; border-radius: 10px; padding: 8px 12px; font-size: 12px; outline: none; cursor: pointer; }
+        .gen-btn { background: var(--neon-purple); border: none; border-radius: 50%; width: 45px; height: 45px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.3s; box-shadow: 0 0 15px rgba(188, 19, 254, 0.3); }
+        .gen-btn:hover { transform: scale(1.1) rotate(-10deg); box-shadow: 0 0 25px var(--neon-purple); }
+        .status-box { margin-top: 25px; font-size: 13px; color: #888; text-align: center; font-style: italic; }
+        .token-box { margin-bottom: 20px; width: 100%; max-width: 500px; }
+        .token-input { width: 100%; padding: 12px; background: #111; border: 1px solid #222; border-radius: 15px; color: #555; font-size: 12px; box-sizing: border-box; }
     </style>
 </head>
 <body>
 
-    <h2 style="letter-spacing: 2px; font-weight: 300;">AI IMAGE <span style="color:var(--neon-purple)">CREATOR</span></h2>
+    <h2 style="letter-spacing: 3px; font-weight: 300; margin-bottom: 40px;">AI IMAGE <span style="color:var(--neon-purple)">CREATOR</span></h2>
+
+    <div class="token-box">
+        <input type="password" id="gToken" class="token-input" placeholder="Enter GitHub Token to authorize...">
+    </div>
 
     <div class="chat-container">
         <div class="input-area">
-            <textarea id="prompt" placeholder="Describe your image... (e.g. A realistic lion in space with neon crown)"></textarea>
+            <textarea id="prompt" placeholder="Gemini ki tarah prompt likho... (e.g. A futuristic city in 2050 with flying cars, cinematic lighting)"></textarea>
             
             <div class="controls">
                 <select id="ratio">
@@ -49,30 +38,58 @@
                     <option value="9:16">Shorts (9:16)</option>
                 </select>
 
-                <button class="gen-btn" onclick="triggerAction()">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                <button class="gen-btn" onclick="runImageEngine()">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
                 </button>
             </div>
         </div>
-        <div id="status" class="status-box">Ready to generate...</div>
+        <div id="status" class="status-box">Waiting for your command...</div>
     </div>
 
     <script>
-        async function triggerAction() {
-            const prompt = document.getElementById('prompt').value.trim();
-            const ratio = document.getElementById('ratio').value;
+        async function runImageEngine() {
             const status = document.getElementById('status');
+            const prompt = document.getElementById('prompt').value.trim();
+            const token = document.getElementById('gToken').value.trim();
+            const ratio = document.getElementById('ratio').value;
 
-            if(!prompt) { alert("Bhai, kuch likho toh!"); return; }
+            if(!prompt || !token) {
+                alert("Bhai, Prompt aur Token dono zaroori hain!");
+                return;
+            }
 
-            status.innerHTML = "✨ Processing prompt...";
-            
-            // Yahan wahi GitHub Actions wala code aayega jo humne live.html mein use kiya tha
-            // Bas repository name aur workflow file (image.yml) change ho jayegi.
-            
-            status.innerHTML = "🚀 Request sent to Engine! Check GitHub Actions.";
+            status.innerHTML = "✨ Gemini Engine processing your request...";
+            status.style.color = "#bc13fe";
+
+            try {
+                // Path must match your repo structure
+                const res = await fetch('https://api.github.com/repos/raghavkroynkr/live-stream-engine/actions/workflows/image.yml/dispatches', {
+                    method: 'POST',
+                    headers: { 
+                        'Authorization': `token ${token}`,
+                        'Accept': 'application/vnd.github+json',
+                        'X-GitHub-Api-Version': '2022-11-28'
+                    },
+                    body: JSON.stringify({ 
+                        ref: 'main', 
+                        inputs: { 
+                            prompt: prompt, 
+                            aspect_ratio: ratio 
+                        } 
+                    })
+                });
+
+                if(res.status === 204) {
+                    status.innerHTML = "🚀 Request sent! Image is being generated in GitHub Actions.";
+                    status.style.color = "#00ffcc";
+                } else {
+                    status.innerHTML = "❌ Error: " + res.status;
+                    alert("Kuch galti hui! Check if image.yml exists.");
+                }
+            } catch (err) {
+                status.innerHTML = "❌ Connection Failed!";
+            }
         }
     </script>
-
 </body>
 </html>
