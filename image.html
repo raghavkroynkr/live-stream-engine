@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI IMAGE CREATOR - V3.5</title>
+    <style>
+        :root { --neon-purple: #bc13fe; --dark-bg: #050505; }
+        body { font-family: 'Inter', sans-serif; background: var(--dark-bg); color: white; margin: 0; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        
+        .chat-container { width: 100%; max-width: 500px; margin-top: 50px; }
+        
+        .input-area { 
+            background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); 
+            border-radius: 25px; padding: 15px; display: flex; flex-direction: column; gap: 10px;
+        }
+
+        textarea { 
+            background: transparent; border: none; color: white; outline: none; 
+            font-size: 16px; resize: none; min-height: 80px; 
+        }
+
+        .controls { display: flex; justify-content: space-between; align-items: center; padding-top: 10px; border-top: 1px solid rgba(255,255,255,0.05); }
+
+        select { background: #1a1a1a; color: #aaa; border: none; border-radius: 10px; padding: 5px 10px; font-size: 12px; }
+
+        .gen-btn { 
+            background: var(--neon-purple); border: none; border-radius: 50%; 
+            width: 45px; height: 45px; cursor: pointer; display: flex; 
+            align-items: center; justify-content: center; transition: 0.3s;
+        }
+        .gen-btn:hover { transform: scale(1.1); box-shadow: 0 0 15px var(--neon-purple); }
+
+        .status-box { margin-top: 20px; font-size: 13px; color: #666; text-align: center; }
+    </style>
+</head>
+<body>
+
+    <h2 style="letter-spacing: 2px; font-weight: 300;">AI IMAGE <span style="color:var(--neon-purple)">CREATOR</span></h2>
+
+    <div class="chat-container">
+        <div class="input-area">
+            <textarea id="prompt" placeholder="Describe your image... (e.g. A realistic lion in space with neon crown)"></textarea>
+            
+            <div class="controls">
+                <select id="ratio">
+                    <option value="1:1">Square (1:1)</option>
+                    <option value="16:9">YouTube (16:9)</option>
+                    <option value="9:16">Shorts (9:16)</option>
+                </select>
+
+                <button class="gen-btn" onclick="triggerAction()">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="white"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"></path></svg>
+                </button>
+            </div>
+        </div>
+        <div id="status" class="status-box">Ready to generate...</div>
+    </div>
+
+    <script>
+        async function triggerAction() {
+            const prompt = document.getElementById('prompt').value.trim();
+            const ratio = document.getElementById('ratio').value;
+            const status = document.getElementById('status');
+
+            if(!prompt) { alert("Bhai, kuch likho toh!"); return; }
+
+            status.innerHTML = "✨ Processing prompt...";
+            
+            // Yahan wahi GitHub Actions wala code aayega jo humne live.html mein use kiya tha
+            // Bas repository name aur workflow file (image.yml) change ho jayegi.
+            
+            status.innerHTML = "🚀 Request sent to Engine! Check GitHub Actions.";
+        }
+    </script>
+
+</body>
+</html>
